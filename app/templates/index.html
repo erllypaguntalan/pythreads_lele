@@ -7,39 +7,7 @@
 			<li><a href="{{ url_for('topic', topicname=topic) }}">{{ topic }}</a></li>
 			{% endfor %}
 		</ul>
-		{% if form %}
-		<form action="" method="post" name="form">
-	        {{ form.hidden_tag() }}
-		    <table>
-		    	<tr>
-		    		<td><h3>Make a thread!</td>
-		    	</tr>
-		        <tr>
-		        	<td>Title:</td>
-		            <td>{{ form.title(size=30, maxlength=50) }}</td>
-		            <td>
-		            {% for error in form.title.errors %}
-		            <span style="color: red;">[{{ error }}]</span><br>
-		            {% endfor %}
-		            </td>
-		        </tr>
-		        <tr>
-		        	<td>Body:</td>
-		            <td>{{ form.body(cols="55", rows="10") }}</td>
-		            <td>
-		            {% for error in form.body.errors %}
-		            <span style="color: red;">[{{ error }}]</span><br>
-		            {% endfor %}
-		            </td>
-		        </tr>
-		        <tr>
-		            <td></td>
-		            <td><input type="submit" value="Post!"></td>
-		            <td></td>
-		        </tr>
-		    </table>
-		</form>
-		{% endif %}
+		<a href="{{ url_for('create') }}">Create Thread</a>
 		{% for thread in threads.items %}
 		<table>
 			<tr valign="top">

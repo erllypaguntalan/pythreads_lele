@@ -21,15 +21,8 @@ def before_request():
 @login_required
 def index(page=1):
     topics = {'News', 'Music', 'Movies', 'Gaming', 'Anime', 'Others'}
-    form = ThreadForm()
-    if form.validate_on_submit():
-        thread = Thread(title=form.title.data, body=form.body.data, timestamp=datetime.utcnow(), author=g.user)
-        db.session.add(thread)
-        db.session.commit()
-        flash('Your thread is now live!')
-        return redirect(url_for('index'))
     threads = g.user.threads.paginate(page, POSTS_PER_PAGE, False)
-    return render_template('index.html', form=form, topics=topics, threads=threads)
+    return render_template('index.html', topics=topics, threads=threads)
 
 
 #------------FACEBOOK LOGIN----------------------------------------------
@@ -96,3 +89,16 @@ def topic(topicname):
 
     return render_template('topic.html',
                             topic=topicname)
+
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    form = ThreadForm()
+    if form.validate_on_submit():
+        thread = Thread(title=form.title.data, body=form.body.data, timestamp=datetime.utcnow(), author=g.user)
+        db.session.add(thread)
+        db.session.commit()
+        flash('Your thread is now live!')
+        return redirect(url_for('index'))
+    return render_template('create.html', form=form)
