@@ -10,6 +10,7 @@ class User(UserMixin, db.Model):
     social_id = db.Column(db.String(64), nullable=False, unique=True)
     email = db.Column(db.String(64), nullable=True)
     about_me = db.Column(db.String(200), nullable=True)
+    threads = db.relationship('Thread', backref='author', lazy='dynamic')
 
     @property
     def is_authenticated(self):
@@ -31,3 +32,15 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+
+class Thread(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    body = db.Column(db.String(200))
+    timestamp = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        return '<Thread %r>' % (self.title)

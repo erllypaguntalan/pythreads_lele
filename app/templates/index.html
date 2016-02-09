@@ -3,11 +3,55 @@
 	<div>
 		<h2>Topics</h2>
 		<ul>
-			<li><a href="#">News</a></li>
-			<li><a href="#">Music</a></li>
-			<li><a href="#">Movies</a></li>
-			<li><a href="#">Gaming</a></li>
-			<li><a href="#">Anime</a></li>
+			{% for topic in topics %}
+			<li><a href="{{ url_for('topic', topicname=topic) }}">{{ topic }}</a></li>
+			{% endfor %}
 		</ul>
+		{% if form %}
+		<form action="" method="post" name="form">
+	        {{ form.hidden_tag() }}
+		    <table>
+		    	<tr>
+		    		<td><h3>Make a thread!</td>
+		    	</tr>
+		        <tr>
+		        	<td>Title:</td>
+		            <td>{{ form.title(size=30, maxlength=50) }}</td>
+		            <td>
+		            {% for error in form.title.errors %}
+		            <span style="color: red;">[{{ error }}]</span><br>
+		            {% endfor %}
+		            </td>
+		        </tr>
+		        <tr>
+		        	<td>Body:</td>
+		            <td>{{ form.body(cols="55", rows="10") }}</td>
+		            <td>
+		            {% for error in form.body.errors %}
+		            <span style="color: red;">[{{ error }}]</span><br>
+		            {% endfor %}
+		            </td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td><input type="submit" value="Post!"></td>
+		            <td></td>
+		        </tr>
+		    </table>
+		</form>
+		{% endif %}
+		{% for thread in threads.items %}
+		<table>
+			<tr valign="top">
+				<td><img src="http://graph.facebook.com/{{ g.user.social_id.split('$')[1] }}/picture?type=small"></td>
+				<td>
+					<b><a href="#"><span style="font-size: 120%">{{ thread.title }}</span></a></b><br>
+					<span style="font-size: 80%">submitted -TIME- by: <a href="#">{{ thread.author.nickname }}</a></span>
+				</td>
+			</tr>
+		</table>
+		{% endfor %}
+		{% if threads.has_prev %}<a href="{{ url_for('index', page=threads.prev_num) }}">&lt;&lt; Newer threads</a>{% else %}&lt;&lt; Newer threads{% endif %} | 
+		{% if threads.has_next %}<a href="{{ url_for('index', page=threads.next_num) }}">Older threads &gt;&gt;</a>{% else %}Older threads &gt;&gt;{% endif %}
 	</div>
 {% endblock %} 

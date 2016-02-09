@@ -1,9 +1,11 @@
 from app import app, db, lm
+from config import POSTS_PER_PAGE
+from datetime import datetime
 from flask import g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
+from .forms import ThreadForm
+from .models import User, Thread
 from .oauth import OAuthSignIn
-from .models import User
-
 
 @lm.user_loader
 def load_user(id):
@@ -14,9 +16,20 @@ def before_request():
     g.user = current_user
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/<int:page>', methods=['GET', 'POST'])
+@login_required
+def index(page=1):
+    topics = {'News', 'Music', 'Movies', 'Gaming', 'Anime', 'Others'}
+    form = ThreadForm()
+    if form.validate_on_submit():
+        thread = Thread(title=form.title.data, body=form.body.data, timestamp=datetime.utcnow(), author=g.user)
+        db.session.add(thread)
+        db.session.commit()
+        flash('Your thread is now live!')
+        return redirect(url_for('index'))
+    threads = g.user.threads.paginate(page, POSTS_PER_PAGE, False)
+    return render_template('index.html', form=form, topics=topics, threads=threads)
 
 
 #------------FACEBOOK LOGIN----------------------------------------------
@@ -46,6 +59,14 @@ def oauth_callback(provider):
 #------------------------------------------------------------------------  
 
 
+@app.route('/login')
+def login():
+    if g.user is not None and g.user.is_authenticated:
+        return redirect(url_for('index'))
+
+    return render_template('index.html')
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -66,3 +87,12 @@ def user(nickname):
     return render_template('user.html',
                            user=user,
                            posts=posts)
+
+@app.route('/topic/<topicname>')
+def topic(topicname):
+    if topicname == None:
+        flash('Topic %s not found.' % topicname)
+        return redirect(url_for('index'))
+
+    return render_template('topic.html',
+                            topic=topicname)
