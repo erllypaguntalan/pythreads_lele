@@ -64,7 +64,7 @@ def login():
     if g.user is not None and g.user.is_authenticated:
         return redirect(url_for('index'))
 
-    return render_template('index.html')
+    return render_template('login.html')
 
 
 @app.route('/logout')
