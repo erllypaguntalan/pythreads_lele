@@ -4,6 +4,19 @@
         <title>PyThreads</title>
     </head>
     <body>
+
+		<h1>PyThreads</h1>
+
+        {% for message in get_flashed_messages() %}
+            <p><b>Error</b>: {{ message }}</p>
+        {% endfor %}
+        {% if current_user.is_authenticated %}
+            <h2>Hi, {{ current_user.nickname }}!</h2>
+            <p><a href="{{ url_for('logout') }}">Logout</a></p>
+        {% else %}
+            <p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
+        {% endif %}
+        <hr>
         <div>
             {% block content %} {% endblock %}
         </div>
