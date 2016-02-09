@@ -5,9 +5,11 @@ from flask.ext.login import LoginManager, UserMixin
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    social_id = db.Column(db.String(64), nullable=False, unique=True)
+    name = db.Column(db.String, index=True, nullable=False)
     nickname = db.Column(db.String(64), nullable=False)
+    social_id = db.Column(db.String(64), nullable=False, unique=True)
     email = db.Column(db.String(64), nullable=True)
+    about_me = db.Column(db.String(200), nullable=True)
 
     @property
     def is_authenticated(self):

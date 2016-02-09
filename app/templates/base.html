@@ -10,11 +10,15 @@
         {% for message in get_flashed_messages() %}
             <p><b>Error</b>: {{ message }}</p>
         {% endfor %}
+        <a href="/" id="home">Home</a>
+    	|
         {% if current_user.is_authenticated %}
-            <h2>Hi, {{ current_user.nickname }}!</h2>
-            <p><a href="{{ url_for('logout') }}">Logout</a></p>
+        	<a href="{{ url_for('user', nickname=g.user.nickname) }}">Profile</a>
+        	|
+            <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
-            <p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
+
+            <a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a>
         {% endif %}
         <hr>
         <div>
