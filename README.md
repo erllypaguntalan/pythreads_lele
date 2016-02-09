@@ -1,0 +1,1 @@
+PyThreads is a site where people share thoughts, ideas, or would just like to initiate a topic so people can start commenting and collaborating around it. The initial idea/topic ( also called as a thread) may be just a single line or a complete descriptive paragraph. Written in Python 3 using Flask 0.10.1 as the framework and SQLite as the database.
