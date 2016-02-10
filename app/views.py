@@ -6,6 +6,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from .forms import ThreadForm
 from .models import User, Thread
 from .oauth import OAuthSignIn
+from sqlalchemy import func
 
 @lm.user_loader
 def load_user(id):
@@ -20,7 +21,17 @@ def before_request():
 @app.route('/<int:page>', methods=['GET', 'POST'])
 @login_required
 def index(page=1):
-    topics = {'News', 'Music', 'Movies', 'Gaming', 'Anime', 'Others'}
+    topics = {
+        'News': {'count': 0},
+        'Music': {'count': 0},
+        'Movies': {'count': 0},
+        'Gaming': {'count': 0},
+        'Anime': {'count': 0},
+        'Others': {'count': 0}
+    }
+    for topic in topics:
+        count = Thread.query.filter_by(topic=topic).count()
+        topics[topic]['count'] = count
     threads = g.user.threads.paginate(page, POSTS_PER_PAGE, False)
     return render_template('index.html', topics=topics, threads=threads)
 
