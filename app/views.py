@@ -83,9 +83,11 @@ def user(nickname, page=1):
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
     threads = user.threads.paginate(page, POSTS_PER_PAGE, False)
+    tracks = Thread.query.all()
     return render_template('user.html',
                            user=user,
-                           threads=threads)
+                           threads=threads,
+                           tracks=tracks)
 
 @app.route('/topic/<topicname>')
 @app.route('/topic/<topicname>/<int:page>', methods=['GET', 'POST'])

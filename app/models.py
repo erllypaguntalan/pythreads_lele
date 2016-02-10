@@ -4,7 +4,7 @@ from flask.ext.login import LoginManager, UserMixin
 
 tracks = db.Table('tracks',
     db.Column('thread_id', db.Integer, db.ForeignKey('thread.id')),
-    db.Column('follower_id', db.Integer, db.ForeignKey('users.id'))
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
 )
 
 
@@ -32,7 +32,7 @@ class User(UserMixin, db.Model):
     threads = db.relationship('Thread', backref='author', lazy='dynamic')
     tracked = db.relationship('Thread',
     							secondary=tracks,
-    							primaryjoin=(tracks.c.follower_id == id),
+    							primaryjoin=(tracks.c.followed_id == id),
     							secondaryjoin=(tracks.c.thread_id == Thread.id),
     							backref=db.backref('tracks', lazy='dynamic'),
     							lazy='dynamic')
@@ -55,20 +55,20 @@ class User(UserMixin, db.Model):
         except NameError:
             return str(self.id)  # python 3
 
-    def track(self, thread):
-        if not self.is_tracked(thread):
-            self.tracked.append(thread)
+    def track(self, post):
+        if not self.is_tracked(post):
+            self.tracked.append(post)
             return self
         else:
             return self
 
-    def untrack(self, thread):
-        if self.is_tracked(thread):
-            self.tracked.remove(thread)
+    def untrack(self, post):
+        if self.is_tracked(post):
+            self.tracked.remove(post)
             return self
 
-    def is_tracked(self, thread):
-        return self.tracked.filter(tracks.c.thread_id == thread.id).count() > 0
+    def is_tracked(self, post):
+        return self.tracked.filter(tracks.c.thread_id == post.id).count() > 0
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
