@@ -19,7 +19,11 @@
 			</tr>
 		</table>
 		{% endfor %}
-		{% if threads.has_prev %}<a href="{{ url_for('index', page=threads.prev_num) }}">&lt;&lt; Newer threads</a>{% else %}&lt;&lt; Newer threads{% endif %} | 
-		{% if threads.has_next %}<a href="{{ url_for('index', page=threads.next_num) }}">Older threads &gt;&gt;</a>{% else %}Older threads &gt;&gt;{% endif %}
+		<br>
+		{% if threads %}
+			{% if threads.has_prev %}
+			<a href="{{ url_for('index', page=threads.prev_num) }}">&lt;&lt; Newer threads</a>{% else %}&lt;&lt; Newer threads{% endif %} | 
+			{% if threads.has_next %}<a href="{{ url_for('index', page=threads.next_num) }}">Older threads &gt;&gt;</a>{% else %}Older threads &gt;&gt;{% endif %}
+		{% endif %}
 	</div>
 {% endblock %} 

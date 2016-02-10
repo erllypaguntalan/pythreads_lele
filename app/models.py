@@ -41,6 +41,7 @@ class Thread(db.Model):
     body = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    topic = db.Column(db.String(50))
 
     def __repr__(self):
         return '<Thread %r>' % (self.title)

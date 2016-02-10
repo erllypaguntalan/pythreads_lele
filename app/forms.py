@@ -1,9 +1,10 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, TextAreaField
+from wtforms import StringField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length
-#from wtforms.widgets import TextArea
 from .models import User
 
 class ThreadForm(Form):
     title = StringField('title', validators=[DataRequired()])
     body = TextAreaField('body', validators=[Length(min=0, max=140)])
+    choices = ['News', 'Music', 'Movies', 'Gaming', 'Anime', 'Others']
+    topic = SelectField('topics', choices=[(c, c) for c in choices], validators=[DataRequired()])
