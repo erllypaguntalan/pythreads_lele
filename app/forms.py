@@ -12,3 +12,6 @@ class ThreadForm(Form):
 class EditForm(Form):
 	title = StringField('title', validators=[DataRequired()])
 	body = TextAreaField('body', validators=[Length(min=0, max=140)])
+
+class CommentForm(Form):
+	body = TextAreaField('body', validators=[Length(min=0, max=140)])

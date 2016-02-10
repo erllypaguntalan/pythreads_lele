@@ -16,6 +16,7 @@ class Thread(db.Model):
 	timestamp = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	topic = db.Column(db.String(50))
+	comments = db.relationship('Comment', backref='c_thread', lazy='dynamic')
 
 	def __repr__(self):
 		return '<Thread %r>' % (self.title)
@@ -30,6 +31,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), nullable=True)
     about_me = db.Column(db.String(200), nullable=True)
     threads = db.relationship('Thread', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='c_author', lazy='dynamic')
     tracked = db.relationship('Thread',
     							secondary=tracks,
     							primaryjoin=(tracks.c.followed_id == id),
@@ -72,3 +74,15 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+
+class Comment(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    date_created = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
+
+    def __repr__(self):
+        return '<Comment %r>' % (self.date_created)

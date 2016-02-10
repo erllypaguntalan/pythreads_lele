@@ -3,8 +3,8 @@ from config import POSTS_PER_PAGE
 from datetime import datetime
 from flask import g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from .forms import ThreadForm, EditForm
-from .models import User, Thread
+from .forms import ThreadForm, EditForm, CommentForm
+from .models import User, Thread, Comment
 from .oauth import OAuthSignIn
 from sqlalchemy import func
 
@@ -185,3 +185,19 @@ def untrack(id):
     db.session.commit()
     flash('Thread untracked.')
     return redirect(url_for('index'))
+
+@app.route('/thread/<int:id>', methods=['GET', 'POST'])
+@login_required
+def thread(id):
+    thread = Thread.query.filter_by(id=id).first()
+    form = CommentForm()
+    if thread is None:
+        flash('Thread not found.')
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, date_created=datetime.utcnow(), c_author=g.user, c_thread=thread)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('thread', id=id))
+    comments = Comment.query.all()
+    return render_template('thread.html', thread=thread, form=form, comments=comments)
