@@ -112,20 +112,17 @@ def create():
     return render_template('create.html', form=form)
 
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@app.route('/edit_thread/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit(id):
+def edit_thread(id):
     form = EditForm()
     thread = Thread.query.get(id)
-
     if thread is None:
         flash('Thread not found.')
         return redirect(url_for('index'))
-
     if thread.author.id != g.user.id:
-        flash('You cannot delete this thread.')
+        flash('You cannot edit this thread.')
         return redirect(url_for('index'))
-    
     if form.validate_on_submit():
         thread.title = form.title.data
         thread.body = form.body.data
@@ -133,9 +130,23 @@ def edit(id):
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('user', nickname=g.user.nickname))
-
     elif request.method != "POST":
         form.title.data = thread.title
         form.body.data = thread.body
-
     return render_template('edit_thread.html', form=form)
+
+
+@app.route('/delete_thread/<int:id>')
+@login_required
+def delete_thread(id):
+    thread = Thread.query.get(id)
+    if thread is None:
+        flash('Thread not found.')
+        return redirect(url_for('index'))
+    if thread.author.id != g.user.id:
+        flash('You cannot delete this thread.')
+        return redirect(url_for('index'))
+    db.session.delete(thread)
+    db.session.commit()
+    flash('Your thread has been deleted.')
+    return redirect(url_for('user', nickname=g.user.nickname))

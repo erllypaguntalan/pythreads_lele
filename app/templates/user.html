@@ -21,7 +21,7 @@
             <td><img src="http://graph.facebook.com/{{ user.social_id.split('$')[1] }}/picture?type=small"></td>
             <td>
                 <b><a href="#"><span style="font-size: 120%">{{ thread.title }}</span></a></b><br>
-                <span style="font-size: 80%">submitted -TIME- {% if user.id == g.user.id %}<a href="{{ url_for('edit', id=thread.id) }}">Edit</a> | <a href="#">Delete</a>{% endif %}</span><br><br>
+                <span style="font-size: 80%">submitted -TIME- {% if user.id == g.user.id %}<a href="{{ url_for('edit_thread', id=thread.id) }}">Edit</a> | <a href="{{ url_for('delete_thread', id=thread.id) }}">Delete</a>{% endif %} </span><br><br>
                 <textarea style="height: 100px; width: 500px; resize: none" readonly>{{ thread.body }}</textarea>
             </td>
         </tr>
