@@ -3,7 +3,14 @@
         <td><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
         <td>
             <b><a href="#"><span style="font-size: 120%">{{ thread.title }}</span></a></b><br>
-            <span style="font-size: 80%">submitted -TIME- by: <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a></span><br><br>
+            <span style="font-size: 80%">submitted -TIME- by: <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
+            {% if not g.user.is_tracked(thread)%}
+            <a href="{{ url_for('track', id=thread.id) }}">Track</a>
+            {% else %}
+            <a href="{{ url_for('untrack', id=thread.id) }}">Untrack</a>
+            {% endif %}
+            </span>
+            <br><br>
             <textarea style="height: 100px; width: 500px; resize: none" readonly>{{ thread.body }}</textarea>
         </td>
     </tr>

@@ -89,6 +89,7 @@ def user(nickname, page=1):
 
 @app.route('/topic/<topicname>')
 @app.route('/topic/<topicname>/<int:page>', methods=['GET', 'POST'])
+@login_required
 def topic(topicname, page=1):
     if topicname == None:
         flash('Topic %s not found.' % topicname)
@@ -150,3 +151,35 @@ def delete_thread(id):
     db.session.commit()
     flash('Your thread has been deleted.')
     return redirect(url_for('user', nickname=g.user.nickname))
+
+@app.route('/track/<int:id>')
+@login_required
+def track(id):
+    thread = Thread.query.filter_by(id=id).first()
+    if thread is None:
+        flash('Thread not found.')
+        return redirect(url_for('index'))
+    track = g.user.track(thread)
+    if track is None:
+        flash('Cannot track thread')
+        return redirect(url_for('index'))
+    db.session.add(track)
+    db.session.commit()
+    flash('Thread is now tracked!')
+    return redirect(url_for('index'))
+
+@app.route('/untrack/<int:id>')
+@login_required
+def untrack(id):
+    thread = Thread.query.filter_by(id=id).first()
+    if thread is None:
+        flash('Thread not found.')
+        return redirect(url_for('index'))
+    track = g.user.untrack(thread)
+    if track is None:
+        flash('Cannot untrack thread.')
+        return redirect(url_for('index'))
+    db.session.add(track)
+    db.session.commit()
+    flash('Thread untracked.')
+    return redirect(url_for('index'))
