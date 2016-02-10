@@ -3,7 +3,7 @@ from config import POSTS_PER_PAGE
 from datetime import datetime
 from flask import g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from .forms import ThreadForm
+from .forms import ThreadForm, EditForm
 from .models import User, Thread
 from .oauth import OAuthSignIn
 from sqlalchemy import func
@@ -18,9 +18,8 @@ def before_request():
 
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/<int:page>', methods=['GET', 'POST'])
 @login_required
-def index(page=1):
+def index():
     topics = {
         'News': {'count': 0},
         'Music': {'count': 0},
@@ -31,9 +30,8 @@ def index(page=1):
     }
     for topic in topics:
         count = Thread.query.filter_by(topic=topic).count()
-        topics[topic]['count'] = count
-    threads = g.user.threads.paginate(page, POSTS_PER_PAGE, False)
-    return render_template('index.html', topics=topics, threads=threads)
+        topics[topic]['count'] = count  
+    return render_template('index.html', topics=topics)
 
 
 #------------FACEBOOK LOGIN----------------------------------------------
@@ -67,7 +65,6 @@ def oauth_callback(provider):
 def login():
     if g.user is not None and g.user.is_authenticated:
         return redirect(url_for('index'))
-
     return render_template('login.html')
 
 
@@ -78,28 +75,28 @@ def logout():
 
 
 @app.route('/user/<nickname>')
+@app.route('/user/<nickname>/<int:page>', methods=['GET', 'POST'])
 @login_required
-def user(nickname):
+def user(nickname, page=1):
     user = User.query.filter_by(nickname=nickname).first()
     if user == None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
+    threads = user.threads.paginate(page, POSTS_PER_PAGE, False)
     return render_template('user.html',
                            user=user,
-                           posts=posts)
+                           threads=threads)
 
 @app.route('/topic/<topicname>')
-def topic(topicname):
+@app.route('/topic/<topicname>/<int:page>', methods=['GET', 'POST'])
+def topic(topicname, page=1):
     if topicname == None:
         flash('Topic %s not found.' % topicname)
         return redirect(url_for('index'))
 
+    threads = Thread.query.filter_by(topic=topicname).paginate(page, POSTS_PER_PAGE, False)
     return render_template('topic.html',
-                            topic=topicname)
+                            topic=topicname, threads=threads)
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -113,3 +110,32 @@ def create():
         flash('Your thread is now live!')
         return redirect(url_for('index'))
     return render_template('create.html', form=form)
+
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit(id):
+    form = EditForm()
+    thread = Thread.query.get(id)
+
+    if thread is None:
+        flash('Thread not found.')
+        return redirect(url_for('index'))
+
+    if thread.author.id != g.user.id:
+        flash('You cannot delete this thread.')
+        return redirect(url_for('index'))
+    
+    if form.validate_on_submit():
+        thread.title = form.title.data
+        thread.body = form.body.data
+        db.session.add(thread)
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('user', nickname=g.user.nickname))
+
+    elif request.method != "POST":
+        form.title.data = thread.title
+        form.body.data = thread.body
+
+    return render_template('edit_thread.html', form=form)
