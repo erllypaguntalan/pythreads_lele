@@ -14,4 +14,4 @@ class EditForm(Form):
 	body = TextAreaField('body', validators=[Length(min=0, max=140), DataRequired()])
 
 class CommentForm(Form):
-	body = TextAreaField('body', validators=[Length(min=0, max=140)])
+	body = TextAreaField('body', validators=[Length(min=0, max=140), DataRequired()])

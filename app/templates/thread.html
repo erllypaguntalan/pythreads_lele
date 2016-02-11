@@ -2,18 +2,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2><a href="{{ url_for('index') }}">Topics</a> / <a href="{{ url_for('topic', topicname=thread.topic) }}">{{ thread.topic }}</a> / {{ thread.title }}</h2>
 <table>
-	<tr>
-		<td>
-			<h1>{{ thread.title }}</h1>
-		</td>
-	</tr>
-	<tr>
+	<tr valign="top">
 		<td>
 			<a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
 		</td>
 		<td>
-			<span style="font-size: 80%">submitted -TIME- </span>
+			<span style="font-size: 80%">submitted -TIME- 
+			{% if g.user.id != thread.user_id %}
+                {% if not g.user.is_tracked(thread)%}
+                <a href="{{ url_for('track', id=thread.id) }}">Track</a>
+                {% else %}
+                <a href="{{ url_for('untrack', id=thread.id) }}">Untrack</a>
+                {% endif %}
+            {% endif %}
+			</span>
 		</td>
 	</tr>
     <tr valign="top">
@@ -46,6 +50,9 @@
           <tr>
               <td>{{ form.body(cols=50, placeholder="Enter your comment here...") }}</td>
               <td><input type="submit" value="Send" ></td>
+              {% for error in form.body.errors %}
+              <span style="color: red;">[{{ error }}]</span><br>
+              {% endfor %}
           </tr>
       </table>
 	</form>
