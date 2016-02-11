@@ -9,7 +9,7 @@
           <tr>
               <td>Title:</td>
               <td>
-                {{ form.title(size=24, maxlength=100) }}
+                {{ form.title(size=24, maxlength=100, required="True") }}
                 {% for error in form.title.errors %}
                 <span style="color: red;">[{{ error }}]</span><br>
                 {% endfor %}
@@ -25,7 +25,7 @@
           </tr>
           <tr>
               <td>Body:</td>
-              <td>{{ form.body(cols=32, rows=4) }}</td>
+              <td>{{ form.body(cols=32, rows=4, required="True") }}</td>
               {% for error in form.body.errors %}
               <span style="color: red;">[{{ error }}]</span><br>
               {% endfor %}

@@ -29,14 +29,26 @@
 </table>
 <div style="padding-left:5em">
 	<br>
-	<h4>Comments</h4>
+	<h4>{{ comments.count() }} Comments »</h4>
 	<hr>
 	{% for comment in comments %}
 	<table>
 		<tr valign="top">
 			<td><img src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture?type=small"></td>
 			<td>
-				<span style="font-size: 80%">said, on 09/01/2016 at 6:25 AM {% if comment.user_id == g.user.id %}<a href="{{ url_for('edit_comment', id=comment.id) }}">Edit</a> | <a href="{{ url_for('delete_comment', id=comment.id) }}">Delete</a>{% endif %}</span><br>
+				<span style="font-size: 80%">said, on 09/01/2016 at 6:25 AM
+				{% if comment.user_id == g.user.id %}
+				<a href="{{ url_for('edit_comment', id=comment.id) }}">Edit</a>
+				|
+				<a href="{{ url_for('delete_comment', id=comment.id) }}">Delete</a>
+				{% else %}
+					{% if not g.user.is_liked(comment) %}
+	                <a href="{{ url_for('like', id=comment.id) }}">Like</a>
+	                {% else %}
+	                <a href="{{ url_for('unlike', id=comment.id) }}">Unlike</a>
+                	{% endif %}
+                {% endif %}
+				</span><br>
 				<textarea style="height: 50px; width: 500px; resize: none" readonly>{{ comment.body }}</textarea>
 			</td>
 		</tr>	
@@ -48,7 +60,7 @@
 		{{ form.hidden_tag() }}
 		<table>
           <tr>
-              <td>{{ form.body(cols=50, placeholder="Enter your comment here...") }}</td>
+              <td>{{ form.body(cols=50, placeholder="Enter your comment here...", required="True") }}</td>
               <td><input type="submit" value="Send" ></td>
               {% for error in form.body.errors %}
               <span style="color: red;">[{{ error }}]</span><br>

@@ -7,6 +7,10 @@ tracks = db.Table('tracks',
     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
 )
 
+likes = db.Table('likes',
+    db.Column('comment_id', db.Integer, db.ForeignKey('comment.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+)
 
 class Thread(db.Model):
 	__tablename__ = 'thread'
@@ -21,6 +25,16 @@ class Thread(db.Model):
 	def __repr__(self):
 		return '<Thread %r>' % (self.title)
 
+class Comment(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    date_created = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
+
+    def __repr__(self):
+        return '<Comment %r>' % (self.date_created)
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -37,6 +51,12 @@ class User(UserMixin, db.Model):
     							primaryjoin=(tracks.c.followed_id == id),
     							secondaryjoin=(tracks.c.thread_id == Thread.id),
     							backref=db.backref('tracks', lazy='dynamic'),
+    							lazy='dynamic')
+    liked = db.relationship('Comment',
+    							secondary=likes,
+    							primaryjoin=(likes.c.followed_id == id),
+    							secondaryjoin=(likes.c.comment_id == Comment.id),
+    							backref=db.backref('likes', lazy='dynamic'),
     							lazy='dynamic')
 
     @property
@@ -72,17 +92,22 @@ class User(UserMixin, db.Model):
     def is_tracked(self, post):
         return self.tracked.filter(tracks.c.thread_id == post.id).count() > 0
 
+    def like(self, post):
+        if not self.is_liked(post):
+            self.liked.append(post)
+            return self
+        else:
+            return self
+
+    def unlike(self, post):
+        if self.is_liked(post):
+            self.liked.remove(post)
+            return self
+
+    def is_liked(self, post):
+        return self.liked.filter(likes.c.comment_id == post.id).count() > 0
+
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
 
-class Comment(db.Model):
-    
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    date_created = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
-
-    def __repr__(self):
-        return '<Comment %r>' % (self.date_created)

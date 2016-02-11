@@ -8,7 +8,7 @@
         <table>
             <tr>
             <td>Body:</td>
-            <td>{{ form.body(cols=100, rows=20) }}</td>
+            <td>{{ form.body(cols=100, rows=20, required="True") }}</td>
             {% for error in form.body.errors %}
             <span style="color: red;">[{{ error }}]</span><br>
             {% endfor %}

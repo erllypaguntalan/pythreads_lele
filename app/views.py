@@ -188,11 +188,11 @@ def untrack(id):
     if thread is None:
         flash('Thread not found.')
         return redirect(url_for('index'))
-    track = g.user.untrack(thread)
-    if track is None:
+    untrack = g.user.untrack(thread)
+    if untrack is None:
         flash('Cannot untrack thread.')
         return redirect(url_for('index'))
-    db.session.add(track)
+    db.session.add(untrack)
     db.session.commit()
     flash('Thread untracked.')
     return redirect(url_for('index'))
@@ -255,3 +255,38 @@ def delete_comment(id):
     flash('Your comment has been deleted.')
     return redirect(url_for('thread', id=comment.thread_id))
 #---------------------------------------------------------------
+
+
+#-----------------LIKE/UNLIKE---------------------------------
+@app.route('/like/<int:id>')
+@login_required
+def like(id):
+    comment = Comment.query.filter_by(id=id).first()
+    if comment is None:
+        flash('Comment not found.')
+        return redirect(url_for('index'))
+    like = g.user.like(comment)
+    if like is None:
+        flash('Cannot like comment')
+        return redirect(url_for('index'))
+    db.session.add(like)
+    db.session.commit()
+    flash('Comment is now liked!')
+    return redirect(url_for('thread', id=comment.thread_id))
+
+@app.route('/unlike/<int:id>')
+@login_required
+def unlike(id):
+    comment = Comment.query.filter_by(id=id).first()
+    if comment is None:
+        flash('Comment not found.')
+        return redirect(url_for('index'))
+    unlike = g.user.unlike(comment)
+    if unlike is None:
+        flash('Cannot unlike comment.')
+        return redirect(url_for('index'))
+    db.session.add(unlike)
+    db.session.commit()
+    flash('Comment unlike.')
+    return redirect(url_for('thread', id=comment.thread_id))
+#-----------------------------------------------------------

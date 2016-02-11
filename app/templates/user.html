@@ -9,8 +9,8 @@
                     <h1>Name: {{ user.name }}</h1>
                     <h3>Nickname: {{ user.nickname }}</h3>
                     <h3>Email: {{ user.email }}</h3>
-                    <h3>About me: {{ user.about_me }}</h3>
-                    {% if user.id == g.user.id %}<p><a href="">Edit</a></p>{% endif %}
+                    <!-- <h3>About me: {{ user.about_me }}</h3>
+                    {% if user.id == g.user.id %}<p><a href="">Edit</a></p>{% endif %} -->
                 </td>
             </tr>
         </table>
@@ -50,7 +50,7 @@
                         |
                         <a href="{{ url_for('delete_thread', id=thread.id) }}">Delete</a>
                     {% else %}
-                        {% if not g.user.id != thread.user_id %}
+                        {% if not g.user.is_tracked(thread) %}
                             <a href="{{ url_for('track', id=thread.id) }}">Track</a>
                         {% else %}
                             <a href="{{ url_for('untrack', id=thread.id) }}">Untrack</a>
