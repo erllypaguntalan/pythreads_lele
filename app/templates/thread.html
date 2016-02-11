@@ -36,7 +36,8 @@
 		<tr valign="top">
 			<td><img src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture?type=small"></td>
 			<td>
-				<span style="font-size: 80%">said, on 09/01/2016 at 6:25 AM
+				<span style="font-size: 80%"><a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a> said, {{ momentjs(comment.date_created).calendar() }}
+				{{ comment.likes.count() }}	
 				{% if comment.user_id == g.user.id %}
 				<a href="{{ url_for('edit_comment', id=comment.id) }}">Edit</a>
 				|

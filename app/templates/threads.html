@@ -3,7 +3,7 @@
         <td><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
         <td>
             <b><a href="{{ url_for('thread', id=thread.id) }}"><span style="font-size: 120%">{{ thread.title }}</span></a></b><br>
-            <span style="font-size: 80%">submitted -TIME- by: <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
+            <span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }} by: <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
             {% if g.user.id != thread.user_id %}
                 {% if not g.user.is_tracked(thread)%}
                 <a href="{{ url_for('track', id=thread.id) }}">Track</a>
