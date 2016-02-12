@@ -1,32 +1,32 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
-
 {% block content %}
-  <h1>Edit Thread</h1>
-  <form action="" method="post" name="edit">
-      {{ form.hidden_tag() }}
-      <table>
-          <tr>
-              <td>Title:</td>
-              <td>
-                {{ form.title(size=101, maxlength=100, required="True") }}
-                {% for error in form.title.errors %}
-                <span style="color: red;">[{{ error }}]</span><br>
-                {% endfor %}
-              </td>
-              
-          </tr>
-          <tr>
-              <td>Body:</td>
-              <td>{{ form.body(cols=100, rows=20, required="True") }}</td>
-              {% for error in form.body.errors %}
-              <span style="color: red;">[{{ error }}]</span><br>
-              {% endfor %}
-          </tr>
-          <tr>
-              <td></td>
-              <td><input type="submit" value="Save Changes"></td>
-          </tr>
-      </table>
-  </form>
-{% endblock %}
+<div class="container" >
+    <div class="well well-sm"><a href="{{ url_for('index') }}">Topics</a> / Edit Thread</div>
+    <div class="well">
+        <h2>Edit Thread</h2>
+        <form class="form-horizontal" action="" method="post" name="edit">
+            {{ form.hidden_tag() }}
+            <div class="well">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Title:</label>
+                    <div class="col-sm-10">
+                        {{ form.title(class="form-control", maxlength=100, required="True") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Body:</label>
+                    <div class="col-sm-10">
+                        {{ form.body(class="form-control", maxlength="5000", rows="20", style="resize:none", required="True") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <input name="submit" type="submit" value="Save Changes" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

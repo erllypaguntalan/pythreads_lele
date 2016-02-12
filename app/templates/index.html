@@ -1,12 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-	<div>
+<div class="container" >
+	<div class="well well-sm">Topics</div>
+	<div class="well">
 		<h2>Topics</h2>
-		<ul>
-			{% for topic in topics %}
-			<li><a href="{{ url_for('topic', topicname=topic) }}">{{ topic }}({{ topics[topic]['count'] }})</a></li>
-			{% endfor %}
-		</ul>
-		<a href="{{ url_for('create') }}">Create Thread</a>
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th>Topic Name</th>
+					<th>Threads</th>
+				</tr>
+				{% for topic in topics %}
+				<tr>
+					<td><a href="{{ url_for('topic', topicname=topic) }}">{{ topic }}</a></td>
+					<td><span class="badge">{{ topics[topic]['count'] }}</span></td>
+				</tr>
+				{% endfor %}
+			</table>
+			<div class="form-group">
+                <div class="col-sm-1 col-sm-offset-10">
+                    <a href="{{ url_for('create') }}" class="btn btn-primary">Create Thread</a>
+                </div>
+            </div>
+		</div>
 	</div>
+</div>
 {% endblock %} 

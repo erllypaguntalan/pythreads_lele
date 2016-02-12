@@ -1,20 +1,43 @@
-<table>
-    <tr valign="top">
-        <td><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
-        <td>
-            <b><a href="{{ url_for('thread', id=thread.id) }}"><span style="font-size: 120%">{{ thread.title }}</span></a></b><br>
-            <span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }} by: <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
-            {% if g.user.id != thread.user_id %}
-                {% if not g.user.is_tracked(thread)%}
-                <a href="{{ url_for('track', id=thread.id) }}">Track</a>
-                {% else %}
-                <a href="{{ url_for('untrack', id=thread.id) }}">Untrack</a>
-                {% endif %}
+<tr>
+    <th width="5%"><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></th>
+    <td>
+        <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
+        <span style="font-size: 80%">
+        {% if g.user.id == thread.user_id %}
+        <a href="{{ url_for('delete_thread', id=thread.id) }}" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+
+<!--         <div class="modal fade" id="delete_thread" role="dialog" data-backdrop="static">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 align="center"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to delete this thread?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                        <a href="{{ url_for('delete_thread', id=thread.id) }}" class="btn btn-danger">Delete{{ thread.id }}</a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
+        {% else %}
+            {% if not g.user.is_tracked(thread)%}
+            <a href="{{ url_for('track', id=thread.id) }}" title="Track" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star-empty"></i></a>
+            {% else %}
+            <a href="{{ url_for('untrack', id=thread.id) }}" title="Untrack" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star"></i></a>
             {% endif %}
-            </span>
-            <br><br>
-            <textarea style="height: 100px; width: 500px; resize: none" readonly>{{ thread.body }}</textarea>
-        </td>
-    </tr>
-</table>
-<hr>
+        {% endif %}
+        </span>
+        <br>
+        <span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }} by
+        {% if g.user.id == thread.author.id %}
+         you
+        {% else %}
+         <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
+        {% endif %}
+        </span>
+        <div class="well"><p class="ellipsis">{{ thread.body }}</p></div>
+    </td>
+</tr>

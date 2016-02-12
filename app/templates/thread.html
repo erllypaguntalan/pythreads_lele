@@ -1,73 +1,113 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
-
 {% block content %}
-<h2><a href="{{ url_for('index') }}">Topics</a> / <a href="{{ url_for('topic', topicname=thread.topic) }}">{{ thread.topic }}</a> / {{ thread.title }}</h2>
-<table>
-	<tr valign="top">
-		<td>
-			<a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
-		</td>
-		<td>
-			<span style="font-size: 80%">submitted -TIME- 
-			{% if g.user.id != thread.user_id %}
-                {% if not g.user.is_tracked(thread)%}
-                <a href="{{ url_for('track', id=thread.id) }}">Track</a>
-                {% else %}
-                <a href="{{ url_for('untrack', id=thread.id) }}">Untrack</a>
-                {% endif %}
-            {% endif %}
-			</span>
-		</td>
-	</tr>
-    <tr valign="top">
-        <td><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=normal"></td>
-        <td>
-            <textarea style="height: 100px; width: 500px; resize: none" readonly>{{ thread.body }}</textarea>
-        </td>
-    </tr>
-</table>
-<div style="padding-left:5em">
-	<br>
-	<h4>{{ comments.count() }} Comments »</h4>
-	<hr>
-	{% for comment in comments %}
-	<table>
-		<tr valign="top">
-			<td><img src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture?type=small"></td>
-			<td>
-				<span style="font-size: 80%"><a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a> said, {{ momentjs(comment.date_created).calendar() }}
-				{{ comment.likes.count() }}	
-				{% if comment.user_id == g.user.id %}
-				<a href="{{ url_for('edit_comment', id=comment.id) }}">Edit</a>
-				|
-				<a href="{{ url_for('delete_comment', id=comment.id) }}">Delete</a>
-				{% else %}
-					{% if not g.user.is_liked(comment) %}
-	                <a href="{{ url_for('like', id=comment.id) }}">Like</a>
-	                {% else %}
-	                <a href="{{ url_for('unlike', id=comment.id) }}">Unlike</a>
-                	{% endif %}
-                {% endif %}
-				</span><br>
-				<textarea style="height: 50px; width: 500px; resize: none" readonly>{{ comment.body }}</textarea>
-			</td>
-		</tr>	
-	</table>
-	<hr>
-	{% endfor %}
-	<br>
-	<form action="" method="post" name="comment">
-		{{ form.hidden_tag() }}
-		<table>
-          <tr>
-              <td>{{ form.body(cols=50, placeholder="Enter your comment here...", required="True") }}</td>
-              <td><input type="submit" value="Send" ></td>
-              {% for error in form.body.errors %}
-              <span style="color: red;">[{{ error }}]</span><br>
-              {% endfor %}
-          </tr>
-      </table>
-	</form>
+<div class="container" >
+	<div class="well well-sm"><a href="{{ url_for('index') }}">Topics</a> / <a href="{{ url_for('topic', topicname=thread.topic) }}">{{ thread.topic }}</a> / {{ thread.title }}</div>
+	<div class="well">
+		<h2>{{ thread.title }}</h2>
+		<div class="table-responsive">
+			<table class="table">
+				<tr>
+					<th width="5%">
+						<a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a><br>
+						<img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=normal">
+					</th>
+					<td>
+						<span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }}
+						{% if g.user.id == thread.user_id %}
+						<a href="#delete_thread" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+			            
+			            <div class="modal fade" id="delete_thread" role="dialog" data-backdrop="static">
+						    <div class="modal-dialog modal-sm">
+						        <div class="modal-content">
+						            <div class="modal-body">
+						                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						                <h3 align="center"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to delete this thread?</h3>
+						            </div>
+						            <div class="modal-footer">
+						                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+						                <a href="{{ url_for('delete_thread', id=thread.id) }}" class="btn btn-danger">Delete</a>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+
+			            <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
+			            {% else %}
+			                {% if not g.user.is_tracked(thread)%}
+			                <a href="{{ url_for('track', id=thread.id) }}" title="Track" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star-empty"></i></a>
+                            {% else %}
+                            <a href="{{ url_for('untrack', id=thread.id) }}" title="Untrack" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star"></i></a>
+                            {% endif %}
+			            {% endif %}
+						</span>
+						<textarea class="form-control" rows="20" style="resize:none" readonly>{{ thread.body }}</textarea>
+					</td>
+				</tr>		
+			</table>
+			<div class="well">
+				<p>{{ comments.count() }} Comment/s »</p>
+				<div class="table-responsive">
+					<table class="table">
+						{% for comment in comments %}
+						<tr>
+							<th width="5%"><img src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture?type=small"></th>
+							<td>
+								<span style="font-size: 80%">
+									{% if g.user.id == comment.c_author.id %}
+									you
+									{% else %}
+									<a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a>
+									{% endif %}
+									 said, {{ momentjs(comment.date_created).calendar() }}
+								{% if comment.user_id == g.user.id %}
+								<a href="{{ url_for('delete_comment', id=comment.id) }}" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+                        		
+<!--                         		<div class="modal fade" id="delete_comment" role="dialog" data-backdrop="static">
+									<div class="modal-dialog modal-sm">
+										<div class="modal-content">
+											<div class="modal-body">
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h3 align="center"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to delete this comment?</h3>
+											</div>
+											<div class="modal-footer">
+											    <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+							                    <a href="{{ url_for('delete_comment', id=comment.id) }}" type="submit" class="btn btn-danger">Delete{{ comment.id }}</a>
+											</div>
+										</div>
+									</div>
+								</div> -->
+
+                        		<a href="{{ url_for('edit_comment', id=comment.id) }}" title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
+				                {% endif %}
+				                </span>
+								<textarea class="form-control" rows="3" style="resize:none" readonly>{{ comment.body }}</textarea>
+								<span>
+									{{ comment.likes.count() }}
+									{% if not g.user.is_liked(comment) %}
+									 <a href="{{ url_for('like', id=comment.id) }}" title="Like" data-placement="bottom" data-toggle-tooltip="tooltip"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+									{% else %}
+									 <a href="{{ url_for('unlike', id=comment.id) }}" title="Unlike" data-placement="bottom" data-toggle-tooltip="tooltip"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+									{% endif %}
+								</span>
+							</th>
+						</td>
+						{% endfor %}
+					</table>
+					<b>Got a Comment?</b>
+					<br><br>
+					<form action="" method="post" name="comment" id='comment'>
+						{{ form.hidden_tag() }}
+						<div class="col-md-13">
+						   {{form.body (class="form-control custom-control row-fluid", maxlength="1000", rows="3", style="resize:none", placeholder="Enter your comment here...", required="True") }}
+						</div>
+						<br>
+						<input class="btn btn-primary pull-right" type="submit" value="Post Comment"></input>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-{% endblock %}
+
+{% endblock %} 
