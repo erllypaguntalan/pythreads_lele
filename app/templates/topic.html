@@ -12,7 +12,7 @@
 				{% endfor %}
 			</table>
             <ul class="pager">
-			{% if threads.has_prev %}
+            {% if threads.has_prev %}
             <li class="previous"><a href="{{ url_for('topic', topicname=topic, page=threads.prev_num) }}">Newer threads</a></li>
             {% else %}
             <li class="previous disabled"><a href="#">Newer threads</a></li>

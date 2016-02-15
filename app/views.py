@@ -19,6 +19,7 @@ def before_request():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    form = ThreadForm()
     topics = {
         'News': {'count': 0},
         'Music': {'count': 0},
@@ -29,8 +30,14 @@ def index():
     }
     for topic in topics:
         count = Thread.query.filter_by(topic=topic).count()
-        topics[topic]['count'] = count  
-    return render_template('index.html', topics=topics)
+        topics[topic]['count'] = count 
+    if form.validate_on_submit():
+        thread = Thread(title=form.title.data, body=form.body.data, topic=form.topic.data, date_created=datetime.utcnow(), author=g.user)
+        db.session.add(thread)
+        db.session.commit()
+        flash('Your thread is now live!')
+        return redirect(url_for('index'))
+    return render_template('index.html', topics=topics, form=form)
 
 
 @app.route('/authorize/<provider>')
@@ -97,19 +104,6 @@ def topic(topicname, page=1):
     threads = Thread.query.filter_by(topic=topicname).paginate(page, POSTS_PER_PAGE, False)
     return render_template('topic.html',
                             topic=topicname, threads=threads)
-
-
-@app.route('/create', methods=['GET', 'POST'])
-@login_required
-def create():
-    form = ThreadForm()
-    if form.validate_on_submit():
-        thread = Thread(title=form.title.data, body=form.body.data, topic=form.topic.data, date_created=datetime.utcnow(), author=g.user)
-        db.session.add(thread)
-        db.session.commit()
-        flash('Your thread is now live!')
-        return redirect(url_for('index'))
-    return render_template('create.html', form=form)
 
 
 @app.route('/edit_thread/<int:id>', methods=['GET', 'POST'])

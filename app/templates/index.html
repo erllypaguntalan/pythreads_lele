@@ -19,10 +19,49 @@
 			</table>
 			<div class="form-group">
                 <div class="col-sm-1 col-sm-offset-10">
-                    <a href="{{ url_for('create') }}" class="btn btn-primary">Create Thread</a>
-                </div>
+                    <a href="#create" class="btn btn-primary" data-toggle="modal">Create Thread</a>
+                 </div>
             </div>
 		</div>
 	</div>
+</div>
+
+<div class="modal fade" id="create" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Thread</h3>
+            </div>
+            <form class="form-horizontal" action="" method="post" name="create">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="well">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Topic:</label>
+                            <div class="col-sm-2">
+                                {{ form.topic(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Title:</label>
+                            <div class="col-sm-9">
+                                {{ form.title(class="form-control", maxlength=200, required="True") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Description:</label>
+                            <div class="col-sm-9">
+                                {{ form.body(class="form-control", maxlength="5000", rows="20", style="resize:none", required="True") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-primary" value="Create" name="create" />
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
