@@ -9,8 +9,8 @@ class ThreadForm(Form):
     topic = SelectField('topics', choices=[(c, c) for c in choices])
 
 class EditForm(Form):
-	title = StringField('title')
-	body = TextAreaField('body')
+    title = StringField('title')
+    body = TextAreaField('body')
 
 class CommentForm(Form):
-	body = TextAreaField('body')
+    body = TextAreaField('body')

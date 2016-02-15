@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block login %}
 <div class="collapse navbar-collapse navHeaderCollapse">
-	<ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right">
         <li>
-    		<a href="{{ url_for('oauth_authorize', provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i> Login with Facebook</a>
-    	</li>
-	</ul>
+            <a href="{{ url_for('oauth_authorize', provider='facebook') }}"><i class="fa fa-facebook fa-lg"></i> Login with Facebook</a>
+        </li>
+    </ul>
 </div>
 {% endblock %}
