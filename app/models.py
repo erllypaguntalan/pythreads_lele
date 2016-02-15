@@ -15,9 +15,9 @@ likes = db.Table('likes',
 class Thread(db.Model):
 	__tablename__ = 'thread'
 	id = db.Column(db.Integer, primary_key=True)
-	title = db.Column(db.String(50))
-	body = db.Column(db.String(200))
-	timestamp = db.Column(db.DateTime)
+	title = db.Column(db.String(200))
+	body = db.Column(db.String(5000))
+	date_created = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	topic = db.Column(db.String(50))
 	comments = db.relationship('Comment', backref='c_thread', lazy='dynamic')
@@ -26,9 +26,8 @@ class Thread(db.Model):
 		return '<Thread %r>' % (self.title)
 
 class Comment(db.Model):
-	
 	id = db.Column(db.Integer, primary_key=True)
-	body = db.Column(db.String(140))
+	body = db.Column(db.String(1000))
 	date_created = db.Column(db.DateTime)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
@@ -43,7 +42,6 @@ class User(UserMixin, db.Model):
 	nickname = db.Column(db.String(64), nullable=False)
 	social_id = db.Column(db.String(64), nullable=False, unique=True)
 	email = db.Column(db.String(64), nullable=True)
-	about_me = db.Column(db.String(200), nullable=True)
 	threads = db.relationship('Thread', backref='author', lazy='dynamic')
 	comments = db.relationship('Comment', backref='c_author', lazy='dynamic')
 	tracked = db.relationship('Thread',
@@ -109,5 +107,3 @@ class User(UserMixin, db.Model):
 
 	def __repr__(self):
 		return '<User %r>' % (self.nickname)
-
-

@@ -104,7 +104,7 @@ def topic(topicname, page=1):
 def create():
     form = ThreadForm()
     if form.validate_on_submit():
-        thread = Thread(title=form.title.data, body=form.body.data, topic=form.topic.data, timestamp=datetime.utcnow(), author=g.user)
+        thread = Thread(title=form.title.data, body=form.body.data, topic=form.topic.data, date_created=datetime.utcnow(), author=g.user)
         db.session.add(thread)
         db.session.commit()
         flash('Your thread is now live!')
