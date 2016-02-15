@@ -101,7 +101,7 @@ def topic(topicname, page=1):
         flash('Topic %s not found.' % topicname)
         return redirect(url_for('index'))
 
-    threads = Thread.query.filter_by(topic=topicname).paginate(page, POSTS_PER_PAGE, False)
+    threads = Thread.query.filter_by(topic=topicname).order_by(Thread.date_created.desc()).paginate(page, POSTS_PER_PAGE, False)
     return render_template('topic.html',
                             topic=topicname, threads=threads)
 
