@@ -13,7 +13,7 @@
 						<img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=normal">
 					</th>
 					<td>
-						<span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }}
+						<span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}
 						{% if g.user.id == thread.user_id %}
 						<a href="#delete_thread" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
 			            

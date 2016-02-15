@@ -11,10 +11,19 @@
 					{% include 'threads.html' %}
 				{% endfor %}
 			</table>
+            <ul class="pager">
 			{% if threads.has_prev %}
-			<a href="{{ url_for('index', page=threads.prev_num) }}">&lt;&lt; Newer threads</a>{% else %}&lt;&lt; Newer threads{% endif %} | 
-			{% if threads.has_next %}<a href="{{ url_for('index', page=threads.next_num) }}">Older threads &gt;&gt;</a>{% else %}Older threads &gt;&gt;{% endif %}
+            <li class="previous"><a href="{{ url_for('topic', topicname=topic, page=threads.prev_num) }}">Newer threads</a></li>
+            {% else %}
+            <li class="previous disabled"><a href="#">Newer threads</a></li>
+            {% endif %}
+            {% if threads.has_next %}
+            <li class="next"><a href="{{ url_for('topic', topicname=topic, page=threads.next_num) }}">Older threads</a></li>
+            {% else %}
+            <li class="next disabled"><a href="#">Older threads</a></li>
+            {% endif %}
+            </ul>
 		</div>
 	</div>
 </div>
-{% endblock %
+{% endblock %}

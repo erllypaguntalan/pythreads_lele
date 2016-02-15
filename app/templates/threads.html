@@ -15,7 +15,7 @@
         {% endif %}
         </span>
         <br>
-        <span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }} by
+        <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }} by
         {% if g.user.id == thread.author.id %}
          you
         {% else %}

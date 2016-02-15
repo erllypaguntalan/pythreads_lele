@@ -32,7 +32,7 @@
                     <tr valign="top">
                         <td>
                             <b><a href="{{ url_for('thread', id=track.id) }}"><span style="font-size: 120%">{{ track.title }}</span></a></b><br>
-                            <span style="font-size: 80%">submitted {{ momentjs(track.timestamp).fromNow() }} by: <a href="{{ url_for('user', nickname=track.author.nickname) }}">{{ track.author.nickname }}</a>
+                            <span style="font-size: 80%">submitted {{ momentjs(track.date_created).fromNow() }} by: <a href="{{ url_for('user', nickname=track.author.nickname) }}">{{ track.author.nickname }}</a>
                             {% if g.user.id == track.user_id %}
                                 <a href="{{ url_for('track', id=track.id) }}" title="Track" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star-empty"></i></a>
                             {% else %}
@@ -60,7 +60,7 @@
                         <span style="font-size: 80%">
                         </span>
                         <br>
-                        <span style="font-size: 80%">submitted {{ momentjs(thread.timestamp).fromNow() }}</span>
+                        <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}</span>
                         {% if g.user.id == thread.user_id %}
                         <a href="{{ url_for('delete_thread', id=thread.id) }}" title="Delete" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
                         <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
