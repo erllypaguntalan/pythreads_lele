@@ -62,23 +62,7 @@
 									 said, {{ momentjs(comment.date_created).calendar() }}
 								{% if comment.user_id == g.user.id %}
 								<a href="{{ url_for('delete_comment', id=comment.id) }}" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
-                        		
-<!--                         		<div class="modal fade" id="delete_comment" role="dialog" data-backdrop="static">
-									<div class="modal-dialog modal-sm">
-										<div class="modal-content">
-											<div class="modal-body">
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-												<h3 align="center"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to delete this comment?</h3>
-											</div>
-											<div class="modal-footer">
-											    <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-							                    <a href="{{ url_for('delete_comment', id=comment.id) }}" type="submit" class="btn btn-danger">Delete{{ comment.id }}</a>
-											</div>
-										</div>
-									</div>
-								</div> -->
-
-                        		<a href="{{ url_for('edit_comment', id=comment.id) }}" title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a href="{{ url_for('edit_comment', id=comment.id) }}" title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
 				                {% endif %}
 				                </span>
 								<textarea class="form-control" rows="3" style="resize:none" readonly>{{ comment.body }}</textarea>
@@ -109,5 +93,4 @@
 		</div>
 	</div>
 </div>
-
 {% endblock %} 

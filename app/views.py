@@ -6,7 +6,6 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from .forms import ThreadForm, EditForm, CommentForm
 from .models import User, Thread, Comment
 from .oauth import OAuthSignIn
-from sqlalchemy import func
 
 @lm.user_loader
 def load_user(id):
@@ -34,7 +33,6 @@ def index():
     return render_template('index.html', topics=topics)
 
 
-#------------FACEBOOK LOGIN----------------------------------------------
 @app.route('/authorize/<provider>')
 def oauth_authorize(provider):
     if not current_user.is_anonymous:
@@ -58,10 +56,8 @@ def oauth_callback(provider):
         db.session.commit()
     login_user(user, True)
     return redirect(url_for('index'))
-#------------------------------------------------------------------------  
 
 
-#-------------------LOGIN/LOGOUT-------------------------------------
 @app.route('/login')
 def login():
     if g.user is not None and g.user.is_authenticated:
@@ -72,10 +68,8 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-#-------------------------------------------------------------------
 
 
-#-------------------------USER---------------------------------------
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>', methods=['GET', 'POST'])
 @login_required
@@ -90,10 +84,8 @@ def user(nickname, page=1):
                            user=user,
                            threads=threads,
                            tracks=tracks)
-#------------------------------------------------------------------
 
 
-#--------------------TOPIC THREADS--------------------------------
 @app.route('/topic/<topicname>')
 @app.route('/topic/<topicname>/<int:page>', methods=['GET', 'POST'])
 @login_required
@@ -105,10 +97,8 @@ def topic(topicname, page=1):
     threads = Thread.query.filter_by(topic=topicname).paginate(page, POSTS_PER_PAGE, False)
     return render_template('topic.html',
                             topic=topicname, threads=threads)
-#------------------------------------------------------------------
 
 
-#------------------CREATE THREAD--------------------------------
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
@@ -120,10 +110,8 @@ def create():
         flash('Your thread is now live!')
         return redirect(url_for('index'))
     return render_template('create.html', form=form)
-#-------------------------------------------------------------------
 
 
-#--------------------EDIT/DELETE THREAD-------------------------
 @app.route('/edit_thread/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_thread(id):
@@ -161,10 +149,8 @@ def delete_thread(id):
     db.session.commit()
     flash('Your thread has been deleted.')
     return redirect(url_for('index'))
-#---------------------------------------------------------------
 
 
-#-----------------TRACK/UNTRACK---------------------------------
 @app.route('/track/<int:id>')
 @login_required
 def track(id):
@@ -196,10 +182,8 @@ def untrack(id):
     db.session.commit()
     flash('Thread untracked.')
     return redirect(url_for('thread', id=id))
-#-----------------------------------------------------------
 
 
-#----------------------THREAD--------------------------------
 @app.route('/thread/<int:id>', methods=['GET', 'POST'])
 @login_required
 def thread(id):
@@ -215,10 +199,8 @@ def thread(id):
         return redirect(url_for('thread', id=thread.id))
     comments = thread.comments
     return render_template('thread.html', thread=thread, form=form, comments=comments)
-#---------------------------------------------------------------
 
 
-#-----------------------EDIT/DELETE COMMENT---------------------
 @app.route('/edit_comment/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_comment(id):
@@ -254,10 +236,8 @@ def delete_comment(id):
     db.session.commit()
     flash('Your comment has been deleted.')
     return redirect(url_for('thread', id=comment.thread_id))
-#---------------------------------------------------------------
 
 
-#-----------------LIKE/UNLIKE---------------------------------
 @app.route('/like/<int:id>')
 @login_required
 def like(id):
@@ -289,4 +269,3 @@ def unlike(id):
     db.session.commit()
     flash('Comment unlike.')
     return redirect(url_for('thread', id=comment.thread_id))
-#-----------------------------------------------------------
