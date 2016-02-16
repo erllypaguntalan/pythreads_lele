@@ -80,10 +80,10 @@
                     </table>
                     <b>Got a Comment?</b>
                     <br><br>
-                    <form action="" method="post" name="comment" id='comment'>
+                    <form action="" method="post" name="commentform">
                         {{ form.hidden_tag() }}
                         <div class="col-md-13">
-                            {{form.body (class="form-control custom-control row-fluid", maxlength="1000", rows="3", style="resize:none", placeholder="Enter your comment here...", required="True") }}
+                            {{form.body (id="comment", class="form-control custom-control row-fluid", maxlength="1000", rows="3", style="resize:none", placeholder="Enter your comment here...", required="required") }}
                         </div>
                         <br>
                         <input class="btn btn-primary pull-right" type="submit" value="Post Comment"></input>
@@ -93,4 +93,14 @@
         </div>
     </div>
 </div>
+<script>
+$(function() {
+  $('body').on('keydown', '#comment', function(e) {
+    console.log(this.value);
+    if (e.which === 32 &&  e.target.selectionStart === 0) {
+      return false;
+    }  
+  });
+});
+</script>
 {% endblock %} 
