@@ -213,7 +213,7 @@ def edit_comment(id):
         return redirect(url_for('thread', id=comment.thread_id))
     elif request.method != "POST":
         form.body.data = comment.body
-    return render_template('edit_comment.html', form=form)
+    return render_template('edit_comment.html', form=form, comment=comment)
 
 @app.route('/delete_comment/<int:id>')
 @login_required

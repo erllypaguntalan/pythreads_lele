@@ -11,6 +11,5 @@ class ThreadForm(Form):
 class EditForm(Form):
     title = StringField('title')
     body = TextAreaField('body')
-
 class CommentForm(Form):
     body = TextAreaField('body')
