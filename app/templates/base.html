@@ -8,11 +8,13 @@
         <link href="/static/css/font-awesome.css" rel="stylesheet">
         <link href="/static/css/font-awesome.min.css" rel="stylesheet">
         <link href="/static/css/animate.css" rel="stylesheet">
+        <link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
         <script src="/static/js/bootstrap-notify.js"></script>
         <script src="/static/js/bootstrap-notify.min.js"></script>
         <script src="/static/js/moment.min.js"></script>
+        <script src="/static/js/jquery.dataTables.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body style="background: url(/static/img/bg.jpg); background-repeat: no-repeat; background-attachment: fixed;">
@@ -43,12 +45,14 @@
                     <p class="navbar-text pull-right">
                         Welcome <strong>{{ g.user.name }}</strong>
                     </p>
-                    <div class="input-group">
-                        <form class="navbar-form pull-right">
-                            <input type="text" class="form-control span2" placeholder="Search">
+                    <div class="col-sm-3 col-md-3">
+                        <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search" name="q">
                             <div class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                             </div>
+                        </div>
                         </form>
                     </div>
                 </div>
@@ -78,10 +82,23 @@
             </div>
         </div>
 
-        <script>
+        <script type="text/javascript">
             $(document).ready(function(){
                     $('[data-toggle-tooltip="tooltip"]').tooltip();   
             });
+
+            $(document).ready(function(){
+                $('#threads').DataTable({
+                    "pagingType": "full_numbers"
+                });
+            });
+
+            $(document).ready(function(){
+                $('#user_threads').DataTable({
+                    "pagingType": "full_numbers"
+                });
+            });
         </script>
+
     </body>
 </html>

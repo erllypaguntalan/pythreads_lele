@@ -6,23 +6,19 @@
     <div class="well">
         <h2>{{ topic }}</h2>
         <div class="table-responsive">
-            <table class="table">
-                {% for thread in threads.items %}
+            <table id="threads" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for thread in threads %}
                     {% include 'threads.html' %}
                 {% endfor %}
+                </tbody>
             </table>
-            <ul class="pager">
-                {% if threads.has_prev %}
-                <li class="previous"><a href="{{ url_for('topic', topicname=topic, page=threads.prev_num) }}">Newer threads</a></li>
-                {% else %}
-                <li class="previous disabled"><a href="#">Newer threads</a></li>
-                {% endif %}
-                {% if threads.has_next %}
-                <li class="next"><a href="{{ url_for('topic', topicname=topic, page=threads.next_num) }}">Older threads</a></li>
-                {% else %}
-                <li class="next disabled"><a href="#">Older threads</a></li>
-                {% endif %}
-            </ul>
         </div>
     </div>
 </div>

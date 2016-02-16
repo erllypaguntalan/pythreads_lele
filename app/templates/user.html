@@ -52,28 +52,30 @@
     <div class="well">
         <h3>Threads:</h3>
         <div class="table-responsive">
-            <table class="table">
-                {% for thread in threads.items %}
-                <tr>
-                    <td>
-                        <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
-                        <span style="font-size: 80%">
-                        </span>
-                        <br>
-                        <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}</span>
-                        {% if g.user.id == thread.user_id %}
-                        <a href="{{ url_for('delete_thread', id=thread.id) }}" title="Delete" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
-                        <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
+            <table id="user_threads" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for thread in threads %}
+                    <tr>
+                        <td>
+                            <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
+                            <span style="font-size: 80%">
+                            </span>
+                            <br>
+                            <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}</span>
+                            {% if g.user.id == thread.user_id %}
+                            <a href="{{ url_for('delete_thread', id=thread.id) }}" title="Delete" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
+                            <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-            {% if threads %}
-                {% if threads.has_prev %}
-                <a href="{{ url_for('index', page=threads.prev_num) }}">&lt;&lt; Newer threads</a>{% else %}&lt;&lt; Newer threads{% endif %} | 
-                {% if threads.has_next %}<a href="{{ url_for('index', page=threads.next_num) }}">Older threads &gt;&gt;</a>{% else %}Older threads &gt;&gt;{% endif %}
-            {% endif %}
         </div>
     </div>
 </div>

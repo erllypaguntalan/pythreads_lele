@@ -1,5 +1,5 @@
 <tr>
-    <th width="5%"><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></th>
+    <td width="5%"><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
     <td>
         <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
         <span style="font-size: 80%">
@@ -24,4 +24,4 @@
         </span>
         <div class="well"><p class="ellipsis">{{ thread.body }}</p></div>
     </td>
-</tr>
+</tr> 

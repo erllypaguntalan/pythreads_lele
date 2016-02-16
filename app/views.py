@@ -1,5 +1,4 @@
 from app import app, db, lm
-from config import POSTS_PER_PAGE
 from datetime import datetime
 from flask import g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
@@ -78,14 +77,14 @@ def logout():
 
 
 @app.route('/user/<nickname>')
-@app.route('/user/<nickname>/<int:page>', methods=['GET', 'POST'])
+@app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
-def user(nickname, page=1):
+def user(nickname):
     user = User.query.filter_by(nickname=nickname).first()
     if user == None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    threads = user.threads.paginate(page, POSTS_PER_PAGE, False)
+    threads = user.threads
     tracks = Thread.query.all()
     return render_template('user.html',
                            user=user,
@@ -94,14 +93,14 @@ def user(nickname, page=1):
 
 
 @app.route('/topic/<topicname>')
-@app.route('/topic/<topicname>/<int:page>', methods=['GET', 'POST'])
+@app.route('/topic/<topicname>', methods=['GET', 'POST'])
 @login_required
-def topic(topicname, page=1):
+def topic(topicname):
     if topicname == None:
         flash('Topic %s not found.' % topicname)
         return redirect(url_for('index'))
 
-    threads = Thread.query.filter_by(topic=topicname).order_by(Thread.date_created.desc()).paginate(page, POSTS_PER_PAGE, False)
+    threads = Thread.query.filter_by(topic=topicname).order_by(Thread.date_created.desc())
     return render_template('topic.html',
                             topic=topicname, threads=threads)
 
