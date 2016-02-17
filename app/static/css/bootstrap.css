@@ -6778,3 +6778,7 @@ border-left-color: #333333;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.glyphicon.small {font-size: 8px;}
+.glyphicon.medium {font-size: 15px;}
+.glyphicon.large {font-size: 23px;}

@@ -14,13 +14,13 @@
                 <tr>
                     <th width="5%">
                         <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a><br>
-                        <img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=normal">
+                        <img class="img-thumbnail" src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=normal">
                     </th>
                     <td>
                         <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}
                         {% if g.user.id == thread.user_id %}
-                        <a href="#delete_thread" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="btn pull-right"><i class="glyphicon glyphicon-remove"></i></a>
-
+                        <a href="#delete_thread" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i style="color:red;" class="glyphicon glyphicon-remove medium"></i></a>
+                        <a href="#" onclick="document.getElementById('editthreadform').submit();" title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit medium"></i></a>
                         <div class="modal fade" id="delete_thread" role="dialog" data-backdrop="static">
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
@@ -37,9 +37,7 @@
                                 </div>
                             </div>
                         </div>
-                        <form method="post" action="{{ url_for('edit_thread', id=thread.id) }}">
-                            <button type="submit "title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-edit"></i></button>
-                        </form>
+                        <form id="editthreadform" method="post" action="{{ url_for('edit_thread', id=thread.id) }}"></form>
                         {% else %}
                             {% if not g.user.is_tracked(thread)%}
                             <form method="post" action="{{ url_for('track', id=thread.id) }}">
@@ -70,27 +68,27 @@
                                     {% else %}
                                     <a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a>
                                     {% endif %}
-                                     said, {{ momentjs(comment.date_created).calendar() }}
+                                     said, {{ momentjs(comment.date_created).calendar() }} | {{ comment.likes.count() }} Likes
                                     {% if comment.user_id == g.user.id %}
-                                    <form method="post" action="{{ url_for('delete_comment', id=comment.id) }}">
-                                        <button type="submit "title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="btn btn-default pull-right"><i style="color: red;" class="glyphicon glyphicon-remove"></i></button>
-                                    </form>
-                                    <form method="post" action="{{ url_for('edit_comment', id=comment.id) }}">
-                                        <button type="submit "title="Edit" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class=" btn btn-primary pull-right"><i class="glyphicon glyphicon-edit"></i></button>
-                                    </form>
+                                    <div class="btn-group pull-right">
+                                        <button class=" btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                                        <ul class="dropdown-menu">
+                                            <form id="editcommentform" method="post" action="{{ url_for('edit_comment', id=comment.id) }}"></form>
+                                            <li><a href="#" onclick="document.getElementById('editcommentform').submit();">Edit</a></li>
+                                            <form id="deletecommentform" method="post" action="{{ url_for('delete_comment', id=comment.id) }}"></form>
+                                            <li><a href="#" onclick="document.getElementById('deletecommentform').submit();">Delete</a></li>
+                                        </ul>
+                                    </div>
                                     {% endif %}
                                 </span>
                                 <textarea class="form-control" rows="3" style="resize:none" readonly>{{ comment.body }}</textarea>
                                 <span>
-                                    {{ comment.likes.count() }}
                                     {% if not g.user.is_liked(comment) %}
-                                    <form method="post" action="{{ url_for('like', id=comment.id) }}">
-                                        <button type="submit "title="Like" data-placement="bottom" data-toggle-tooltip="tooltip" clas="btn btn-primary"><i class="glyphicon glyphicon-thumbs-up"></i></button>
-                                    </form>
+                                    <form id="likecommentform" method="post" action="{{ url_for('like', id=comment.id) }}"></form>
+                                    <a href="#" onclick="document.getElementById('likecommentform').submit();"><i class="glyphicon glyphicon-thumbs-up"></i> Like</a>
                                     {% else %}
-                                    <form method="post" action="{{ url_for('unlike', id=comment.id) }}">
-                                        <button type="submit "title="Unlike" data-placement="bottom" data-toggle-tooltip="tooltip" clas="btn btn-primary"><i class="glyphicon glyphicon-thumbs-down"></i></button>
-                                    </form>
+                                    <form id="unlikecommentform" method="post" action="{{ url_for('unlike', id=comment.id) }}"></form>
+                                    <a href="#" onclick="document.getElementById('unlikecommentform').submit();"><i class="glyphicon glyphicon-thumbs-down"></i> Unlike</a>
                                     {% endif %}
                                 </span>
                             </td>
