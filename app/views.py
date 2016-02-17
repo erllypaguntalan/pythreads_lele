@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from .forms import ThreadForm, EditForm, CommentForm
-from .models import User, Thread, Comment
+from .models import User, Thread, Comment, Save, Delete
 from .oauth import OAuthSignIn
 
 @lm.user_loader
@@ -32,8 +32,7 @@ def index():
         topics[topic]['count'] = count 
     if form.validate_on_submit():
         thread = Thread(title=form.title.data, body=form.body.data, topic=form.topic.data, date_created=datetime.utcnow(), author=g.user)
-        db.session.add(thread)
-        db.session.commit()
+        Save(thread)
         flash('Your thread is now live!')
         return redirect(url_for('index'))
     return render_template('index.html', topics=topics, form=form)
@@ -58,8 +57,7 @@ def oauth_callback(provider):
     user = User.query.filter_by(social_id=social_id).first()
     if not user:
         user = User(social_id=social_id, nickname=email.split('@')[0], email=email, name=username)
-        db.session.add(user)
-        db.session.commit()
+        Save(user)
     login_user(user, True)
     return redirect(url_for('index'))
 
@@ -76,7 +74,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/user/<nickname>')
 @app.route('/user/<nickname>', methods=['GET', 'POST'])
 @login_required
 def user(nickname):
@@ -92,7 +89,6 @@ def user(nickname):
                            tracks=tracks)
 
 
-@app.route('/topic/<topicname>')
 @app.route('/topic/<topicname>', methods=['GET', 'POST'])
 @login_required
 def topic(topicname):
@@ -105,7 +101,7 @@ def topic(topicname):
                             topic=topicname, threads=threads)
 
 
-@app.route('/edit_thread/<int:id>', methods=['GET', 'POST'])
+@app.route('/edit_thread/<int:id>', methods=['POST'])
 @login_required
 def edit_thread(id):
     form = EditForm()
@@ -119,16 +115,15 @@ def edit_thread(id):
     if form.validate_on_submit():
         thread.title = form.title.data
         thread.body = form.body.data
-        db.session.add(thread)
-        db.session.commit()
+        Save(thread)
         flash('Your changes have been saved.')
         return redirect(url_for('thread', id=id))
-    elif request.method != "POST":
+    elif request.method == "POST":
         form.title.data = thread.title
         form.body.data = thread.body
     return render_template('edit_thread.html', form=form, thread=thread)
 
-@app.route('/delete_thread/<int:id>')
+@app.route('/delete_thread/<int:id>', methods=['POST'])
 @login_required
 def delete_thread(id):
     thread = Thread.query.get(id)
@@ -138,13 +133,12 @@ def delete_thread(id):
     if thread.author.id != g.user.id:
         flash('You cannot delete this thread.')
         return redirect(url_for('thread', id=id))
-    db.session.delete(thread)
-    db.session.commit()
+    Delete(thread)
     flash('Your thread has been deleted.')
     return redirect(url_for('index'))
 
 
-@app.route('/track/<int:id>')
+@app.route('/track/<int:id>', methods=['POST'])
 @login_required
 def track(id):
     thread = Thread.query.get(id)
@@ -155,12 +149,11 @@ def track(id):
     if track is None:
         flash('Cannot track thread')
         return redirect(url_for('thread', id=id))
-    db.session.add(track)
-    db.session.commit()
+    Save(track)
     flash('Thread is now tracked!')
     return redirect(url_for('thread', id=id))
 
-@app.route('/untrack/<int:id>')
+@app.route('/untrack/<int:id>', methods=['POST'])
 @login_required
 def untrack(id):
     thread = Thread.query.get(id)
@@ -171,8 +164,7 @@ def untrack(id):
     if untrack is None:
         flash('Cannot untrack thread.')
         return redirect(url_for('thread', id=id))
-    db.session.add(untrack)
-    db.session.commit()
+    Save(untrack)
     flash('Thread untracked.')
     return redirect(url_for('thread', id=id))
 
@@ -187,14 +179,13 @@ def thread(id):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, date_created=datetime.utcnow(), c_author=g.user, c_thread=thread)
-        db.session.add(comment)
-        db.session.commit()
+        Save(comment)
         return redirect(url_for('thread', id=thread.id))
     comments = thread.comments
     return render_template('thread.html', thread=thread, form=form, comments=comments)
 
 
-@app.route('/edit_comment/<int:id>', methods=['GET', 'POST'])
+@app.route('/edit_comment/<int:id>', methods=['POST'])
 @login_required
 def edit_comment(id):
     form = CommentForm()
@@ -207,15 +198,14 @@ def edit_comment(id):
         return redirect(url_for('thread', id=comment.thread_id))
     if form.validate_on_submit():
         comment.body = form.body.data
-        db.session.add(comment)
-        db.session.commit()
+        Save(comment)
         flash('Your changes have been saved.')
         return redirect(url_for('thread', id=comment.thread_id))
-    elif request.method != "POST":
+    elif request.method == "POST":
         form.body.data = comment.body
     return render_template('edit_comment.html', form=form, comment=comment)
 
-@app.route('/delete_comment/<int:id>')
+@app.route('/delete_comment/<int:id>', methods=['POST'])
 @login_required
 def delete_comment(id):
     comment = Comment.query.get(id)
@@ -225,13 +215,12 @@ def delete_comment(id):
     if comment.c_author.id != g.user.id:
         flash('You cannot delete this comment.')
         return redirect(url_for('thread', id=comment.thread_id))
-    db.session.delete(comment)
-    db.session.commit()
+    Delete(comment)
     flash('Your comment has been deleted.')
     return redirect(url_for('thread', id=comment.thread_id))
 
 
-@app.route('/like/<int:id>')
+@app.route('/like/<int:id>', methods=['POST'])
 @login_required
 def like(id):
     comment = Comment.query.get(id)
@@ -242,12 +231,11 @@ def like(id):
     if like is None:
         flash('Cannot like comment')
         return redirect(url_for('thread', id=comment.thread_id))
-    db.session.add(like)
-    db.session.commit()
+    Save(like)
     flash('Comment is now liked!')
     return redirect(url_for('thread', id=comment.thread_id))
 
-@app.route('/unlike/<int:id>')
+@app.route('/unlike/<int:id>', methods=['POST'])
 @login_required
 def unlike(id):
     comment = Comment.query.get(id)
@@ -258,7 +246,6 @@ def unlike(id):
     if unlike is None:
         flash('Cannot unlike comment.')
         return redirect(url_for('thread', id=comment.thread_id))
-    db.session.add(unlike)
-    db.session.commit()
+    Save(unlike)
     flash('Comment unlike.')
     return redirect(url_for('thread', id=comment.thread_id))

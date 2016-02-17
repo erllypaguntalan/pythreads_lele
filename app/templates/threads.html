@@ -2,18 +2,6 @@
     <td width="5%"><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
     <td>
         <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
-        <span style="font-size: 80%">
-        {% if g.user.id == thread.user_id %}
-        <a href="{{ url_for('delete_thread', id=thread.id) }}" title="Delete" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>
-        <a href="{{ url_for('edit_thread', id=thread.id) }}" title="Edit" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-edit"></i></a>
-        {% else %}
-            {% if not g.user.is_tracked(thread)%}
-            <a href="{{ url_for('track', id=thread.id) }}" title="Track" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star-empty"></i></a>
-            {% else %}
-            <a href="{{ url_for('untrack', id=thread.id) }}" title="Untrack" data-placement="bottom" data-toggle-tooltip="tooltip" class="pull-right"><i class="glyphicon glyphicon-star"></i></a>
-            {% endif %}
-        {% endif %}
-        </span>
         <br>
         <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }} by
         {% if g.user.id == thread.author.id %}

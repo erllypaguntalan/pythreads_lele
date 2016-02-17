@@ -107,3 +107,12 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+
+def Save(model):
+    db.session.add(model)
+    db.session.commit()
+    
+def Delete(model):
+    db.session.delete(model)
+    db.session.commit()
