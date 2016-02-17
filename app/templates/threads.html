@@ -9,7 +9,10 @@
         {% else %}
          <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
         {% endif %}
+        <br>
+        <small>{{ thread.comments.count() }} comment/s</small>
         </span>
         <div class="well"><p class="ellipsis">{{ thread.body }}</p></div>
+
     </td>
 </tr> 
