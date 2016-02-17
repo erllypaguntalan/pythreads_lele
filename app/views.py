@@ -81,7 +81,7 @@ def user(nickname):
     if user == None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    threads = user.threads
+    threads = user.threads.order_by(Thread.date_created.desc())
     tracks = Thread.query.all()
     return render_template('user.html',
                            user=user,

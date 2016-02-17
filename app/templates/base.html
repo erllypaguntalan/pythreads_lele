@@ -90,12 +90,23 @@
 
             $(document).ready(function(){
                 $('#threads').DataTable({
+                    "ordering": false,
                     "pagingType": "full_numbers"
                 });
             });
 
             $(document).ready(function(){
                 $('#user_threads').DataTable({
+                    bInfo: false,
+                    "pagingType": "full_numbers"
+                });
+            });
+
+            $(document).ready(function(){
+                $('#comments').DataTable({
+                    bFilter: false,
+                    bInfo: false,
+                    "orderFixed": [ 1, 'desc' ],
                     "pagingType": "full_numbers"
                 });
             });
