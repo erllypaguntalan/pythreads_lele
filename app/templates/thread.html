@@ -1,8 +1,12 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 {% block content %}
-<div class="container" >
-    <div class="well well-sm"><a href="{{ url_for('index') }}">Topics</a> / <a href="{{ url_for('topic', topicname=thread.topic) }}">{{ thread.topic }}</a> / {{ thread.title }}</div>
+<div class="container">
+    <ul class="breadcrumb">
+        <li><a href="{{ url_for('index') }}">Topics</a> <span class="divider"></span></li>
+        <li><a href="{{ url_for('topic', topicname=thread.topic) }}">{{ thread.topic }}</a> <span class="divider"></span></li>
+        <li class="active">{{ thread.title }}</li>
+    </ul>
     <div class="well">
     <h2>{{ thread.title }}</h2>
         <div class="table-responsive">
