@@ -2,70 +2,77 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container" >
-    <div class="well col-md-2" align="center">
-        <img src="http://graph.facebook.com/{{ user.social_id.split('$')[1] }}/picture?type=normal">
+    <div class="well col-md-3" align="center">
+        <img class = "img-thumbnail" src="http://graph.facebook.com/{{ user.social_id.split('$')[1] }}/picture?type=large">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a data-toggle="tab" href="#profile">Profile</a></li>
+            <li><a data-toggle="tab" href="#thread">Threads</a></li>
+            {% if user.id == g.user.id %}
+            <li><a data-toggle="tab" href="#track">Tracked Threads</a></li>
+            {% endif %}
+        </ul>
     </div>
-    <div class="well col-md-10">
-        <div class="panel panel-default">
-            <div class="panel-heading">Info</div>
-            <div class="panel-body">
-                <ul class="list-group">
-                    <h4>Name</h4>
-                    <li class="list-group-item">{{ user.name }}</li>
-                    <h4>Nickname</h4>
-                    <li class="list-group-item">{{ user.nickname }}</li>
-                    <h4>Email</h4>
-                    <li class="list-group-item">{{ user.email }}</li>
-                </ul>
+    <div class="well col-md-9">
+        <div class="tab-content">
+            <div id="profile" class="tab-pane fade in active">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Info</div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <h4>Name</h4>
+                            <li class="list-group-item">{{ user.name }}</li>
+                            <h4>Nickname</h4>
+                            <li class="list-group-item">{{ user.nickname }}</li>
+                            <h4>Email</h4>
+                            <li class="list-group-item">{{ user.email }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-{% if user.id == g.user.id %}
-<div class="container">
-    <div class="well">
-        <h3>Tracked Threads:</h3>
-        <div class="table-responsive">
-            <table class="table">
-            {% for track in tracks %}
-                {% if g.user.is_tracked(track) %}
-                    <tr valign="top">
-                        <td>
-                            <b><a href="{{ url_for('thread', id=track.id) }}"><span style="font-size: 120%">{{ track.title }}</span></a></b><br>
-                            <span style="font-size: 80%">submitted {{ momentjs(track.date_created).fromNow() }} by: <a href="{{ url_for('user', nickname=track.author.nickname) }}">{{ track.author.nickname }}</a></span>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </table>
-        </div>
-    </div>
-</div>
-{% endif %}
-<div class="container">
-    <div class="well">
-        <h3>Threads:</h3>
-        <div class="table-responsive">
-            <table id="user_threads" class="display" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for thread in threads %}
-                    <tr>
-                        <td>
-                            <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
-                            <span style="font-size: 80%">
-                            </span>
-                            <br>
-                            <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}</span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div id="thread" class="tab-pane fade">
+                <div class="table-responsive">
+                    <table id="user_threads" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for thread in threads %}
+                            <tr>
+                                <td>
+                                    <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
+                                    <span style="font-size: 80%">
+                                    </span>
+                                    <br>
+                                    <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if user.id == g.user.id %}
+            <div id="track" class="tab-pane fade">
+                <div class="table-responsive">
+                    <table class="table">
+                        {% for track in tracks if g.user.is_tracked(track) %}
+                        <tr valign="top">
+                            <td>
+                                <b><a href="{{ url_for('thread', id=track.id) }}"><span style="font-size: 120%">{{ track.title }}</span></a></b><br>
+                                <span style="font-size: 80%">submitted {{ momentjs(track.date_created).fromNow() }} by: <a href="{{ url_for('user', nickname=track.author.nickname) }}">{{ track.author.nickname }}</a></span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <div class="alert alert-info">
+                            You have not tracked any threads yet.
+                        </div>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
 from app import app, db, lm
 from datetime import datetime
-from flask import g, flash, render_template, redirect, request, session, url_for
+from flask import current_app, g, flash, render_template, redirect, request, session, url_for
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from .forms import ThreadForm, EditForm, CommentForm
 from .models import User, Thread, Comment, Save, Delete
