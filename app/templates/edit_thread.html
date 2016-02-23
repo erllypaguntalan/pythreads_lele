@@ -1,0 +1,61 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container" >
+    <div class="well well-sm"><a href="{{ url_for('index') }}">Topics</a> / Edit Thread</div>
+    <div class="well">
+        <h2>Edit Thread</h2>
+        <form id="threadEditForm" method="post" action="" class="form-horizontal">
+            {{ form.hidden_tag() }}
+            <div class="well">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Title:</label>
+                    <div class="col-sm-10">
+                        {{ form.title(id="title", class="form-control", maxlength=100, required="True", autocomplete="off") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Description:</label>
+                    <div class="col-sm-10">
+                        {{ form.body(id="body", class="form-control", maxlength="5000", rows="20", style="resize:none") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <a href="{{ url_for('thread', id=thread.id) }}" class="btn btn-default">Cancel</a>
+                        <input class="btn btn-primary" type="submit" value="Save Changes"></input>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#threadEditForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            title: {
+                validators: {
+                    notEmpty: {
+                        message: 'This field can\'t be empty'
+                    }
+                }
+            },
+            body: {
+                validators: {
+                    notEmpty: {
+                        message: 'This field can\'t be empty'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

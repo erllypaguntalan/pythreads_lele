@@ -1,0 +1,17 @@
+<tr>
+    <td width="5%"><img src="http://graph.facebook.com/{{ thread.author.social_id.split('$')[1] }}/picture?type=small"></td>
+    <td>
+        <b><a href="{{ url_for('thread', id=thread.id) }}" style="font-size: 120%">{{ thread.title }}</a></b>
+        <br>
+        <span style="font-size: 80%">submitted {{ momentjs(thread.date_created).fromNow() }} by
+        {% if g.user.id == thread.author.id %}
+         you
+        {% else %}
+         <a href="{{ url_for('user', nickname=thread.author.nickname) }}">{{ thread.author.nickname }}</a>
+        {% endif %}
+        <br>
+        <small>{{ thread.comments.count() }} comment/s</small>
+        </span>
+        <div class="well"><p class="ellipsis">{{ thread.body }}</p></div>
+    </td>
+</tr> 

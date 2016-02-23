@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <ul class="breadcrumb">
+        <li class="active">Topics</li>
+    </ul>
+    <div class="well">
+        <h2>Topics</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <tr>
+                    <th>Topic Name</th>
+                    <th>Threads</th>
+                </tr>
+                {% for topic in topics %}
+                <tr>
+                    <td><a href="{{ url_for('topic', topicname=topic) }}">{{ topic }}</a></td>
+                    <td><span class="badge">{{ topics[topic]['count'] }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="form-group">
+                <div class="col-sm-1 col-sm-offset-10">
+                    <a href="#create" class="btn btn-primary" data-toggle="modal">Create Thread</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Thread</h3>
+            </div>
+            <form id="threadForm" method="post" action="" class="form-horizontal">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="well">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Topic:</label>
+                            <div class="col-sm-2">
+                                {{ form.topic(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Title:</label>
+                            <div class="col-sm-9">
+                                {{ form.title(id="title", class="form-control", maxlength=200, autocomplete="off") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Description:</label>
+                            <div class="col-sm-9">
+                                {{ form.body(id="body", class="form-control", maxlength="5000", rows="20", style="resize:none") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input class="btn btn-primary" type="submit" value="Create"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#threadForm').bootstrapValidator({
+        message: 'This value is not valid',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            title: {
+                validators: {
+                    notEmpty: {
+                        message: 'This field can\'t be empty'
+                    }
+                }
+            },
+            body: {
+                validators: {
+                    notEmpty: {
+                        message: 'This field can\'t be empty'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

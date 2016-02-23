@@ -1,0 +1,28 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container" >
+    <ul class="breadcrumb">
+        <li><a href="{{ url_for('index') }}">Topics</a> <span class="divider"></span></li>
+        <li class="active">{{ topic }}</li>
+    </ul>
+    <div class="well">
+        <h2>{{ topic }}</h2>
+        <div class="table-responsive">
+            <table id="threads" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for thread in threads %}
+                    {% include 'threads.html' %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

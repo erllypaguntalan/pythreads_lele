@@ -1,0 +1,38 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container" >
+    <div class="well well-sm"><a href="{{ url_for('index') }}">Topics</a> / Create Thread</div>
+    <div class="well">
+        <h2>Create Thread</h2>
+        <form class="form-horizontal" action="" method="post" name="create">
+            {{ form.hidden_tag() }}
+            <div class="well">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Topic:</label>
+                    <div class="col-sm-2">
+                        {{ form.topic(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Title:</label>
+                    <div class="col-sm-10">
+                        {{ form.title(class="form-control", maxlength=200, required="True") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Description:</label>
+                    <div class="col-sm-10">
+                        {{ form.body(class="form-control", maxlength="5000", rows="20", style="resize:none", required="True") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <input name="submit" type="submit" value="Create" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>PyThreads</title>
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/static/css/animate.css" rel="stylesheet">
+        <link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="/static/css/bootstrapValidator.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/bootstrap-notify.js"></script>
+        <script src="/static/js/bootstrap-notify.min.js"></script>
+        <script src="/static/js/moment.min.js"></script>
+        <script src="/static/js/jquery.dataTables.min.js"></script>
+        <script src="/static/js/bootstrapValidator.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="background: url(/static/img/bg.jpg); background-repeat: no-repeat; background-attachment: fixed;">
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">PYTHREADS</a>
+                </div>
+                {% if current_user.is_authenticated %}
+                <div class="collapse navbar-collapse navHeaderCollapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="{{ url_for('index') }}"><i class="glyphicon glyphicon-home"></i> Home</a></li>
+                        {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('user', nickname=g.user.nickname) }}"><i class="glyphicon glyphicon-user"></i> Your Profile</a></li>
+                        {% endif %}
+                        <div class="col-sm-6">
+                            <form class="navbar-form" role="search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search" name="q">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#logout" class="bottom" title="Logout" data-placement="bottom" data-toggle="modal" data-toggle-tooltip="tooltip" data-original-title="Logout"><i class="glyphicon glyphicon-off"></i></a>
+                        </li>
+                    </ul>
+                    <p class="navbar-text pull-right">
+                        Welcome <strong>{{ g.user.name }}</strong>
+                    </p>
+                </div>
+                {% endif %}
+                {% block login %}{% endblock %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                {% include 'flash.html' %}
+                {% block content %} {% endblock %}
+            </div>
+        </div>
+
+        <div class="modal fade" id="logout" role="dialog" data-backdrop="static">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 align="center"><i class="glyphicon glyphicon-question-sign"></i> Are you sure you want to log out?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                        <a href="{{ url_for('logout') }}" type="submit" class="btn btn-primary" >Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                    $('[data-toggle-tooltip="tooltip"]').tooltip();   
+            });
+
+            $(document).ready(function(){
+                $('#threads').DataTable({
+                    "ordering": false,
+                    "pagingType": "full_numbers"
+                });
+            });
+
+            $(document).ready(function(){
+                $('#user_threads').DataTable({
+                    bInfo: false,
+                    "ordering": false,
+                    "pagingType": "full_numbers"
+                });
+            });
+
+            $(document).ready(function(){
+                $('#comments').DataTable({
+                    bFilter: false,
+                    bInfo: false,
+                    "orderFixed": [ 1, 'desc' ],
+                    "pagingType": "full_numbers"
+                });
+            });
+        </script>
+
+    </body>
+</html>
