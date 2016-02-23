@@ -80,10 +80,10 @@
                                         <div class="btn-group pull-right">
                                             <button class=" btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-option-horizontal"></i></button>
                                             <ul class="dropdown-menu">
-                                                <form id="editcommentform" method="post" action="{{ url_for('edit_comment', id=comment.id) }}"></form>
-                                                <li><a href="#" onclick="document.getElementById('editcommentform').submit();">Edit</a></li>
-                                                <form id="deletecommentform" method="post" action="{{ url_for('delete_comment', id=comment.id) }}"></form>
-                                                <li><a href="#" onclick="document.getElementById('deletecommentform').submit();">Delete</a></li>
+                                                <form id="editcommentform{{ loop.index }}" method="post" action="{{ url_for('edit_comment', id=comment.id) }}"></form>
+                                                <li><a href="#" onclick="document.getElementById('editcommentform{{ loop.index }}').submit();">Edit</a></li>
+                                                <form id="deletecommentform{{ loop.index }}" method="post" action="{{ url_for('delete_comment', id=comment.id) }}"></form>
+                                                <li><a href="#" onclick="document.getElementById('deletecommentform{{ loop.index }}').submit();">Delete</a></li>
                                             </ul>
                                         </div>
                                         {% endif %}
@@ -91,11 +91,11 @@
                                     <textarea class="form-control" rows="3" style="resize:none" readonly>{{ comment.body }}</textarea>
                                     <span>
                                         {% if not g.user.is_liked(comment) %}
-                                        <form id="likecommentform" method="post" action="{{ url_for('like', id=comment.id) }}"></form>
-                                        <a href="#" onclick="document.getElementById('likecommentform').submit();"><i class="glyphicon glyphicon-thumbs-up"></i> Like</a>
+                                        <form id="likecommentform{{ loop.index }}" method="post" action="{{ url_for('like', id=comment.id) }}"></form>
+                                        <a href="#" onclick="document.getElementById('likecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-up"></i> Like</a>
                                         {% else %}
-                                        <form id="unlikecommentform" method="post" action="{{ url_for('unlike', id=comment.id) }}"></form>
-                                        <a href="#" onclick="document.getElementById('unlikecommentform').submit();"><i class="glyphicon glyphicon-thumbs-down"></i> Unlike</a>
+                                        <form id="unlikecommentform{{ loop.index }}" method="post" action="{{ url_for('unlike', id=comment.id) }}"></form>
+                                        <a href="#" onclick="document.getElementById('unlikecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-down"></i> Unlike</a>
                                         {% endif %}
                                     </span>
                                 </td>
