@@ -1,0 +1,62 @@
+{% for comment in comments %}
+<tr>
+    <td>
+        <div style="font-size: 80%">
+            <img width="30" height="30" src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture">
+            <a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a>
+            said, {{ momentjs(comment.date_created).fromNow() }}
+            {% if comment.user_id == g.user.id %}
+            <div class="btn-group pull-right">
+                <a class="dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-option-vertical medium"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a id="edit{{ loop.index }}">Edit{{id}}</a></li>
+                    <form id="deletecommentform{{ loop.index }}" method="post" action="{{ url_for('delete_comment', id=comment.id) }}"></form>
+                    <li><a href="#" onclick="document.getElementById('deletecommentform{{ loop.index }}').submit();">Delete</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        <blockquote id="comment{{ loop.index }}" data-pk="{{ comment.id }}" data-type="textarea">{{ comment.body }}</blockquote>
+        <div style="font-size: 80%" class="text-muted">
+            {% if comment.likes.count() != 0 %}
+                {% if comment.likes.count() > 1 %}
+                {{ comment.likes.count() }} likes
+                {% else %}
+                1 like
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if not g.user.is_liked(comment) %}
+            <form id="likecommentform{{ loop.index }}" method="post" action="{{ url_for('like', id=comment.id) }}"></form>
+            <a href="#" onclick="document.getElementById('likecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-up"></i> Like</a>
+            {% else %}
+            <form id="unlikecommentform{{ loop.index }}" method="post" action="{{ url_for('unlike', id=comment.id) }}"></form>
+            <a href="#" onclick="document.getElementById('unlikecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-down"></i> Unlike</a>
+            {% endif %}
+        </div>
+    </td>
+</tr>
+<script>
+    $(function(){
+        $.fn.editable.defaults.mode = 'inline';
+        $('#comment{{ loop.index }}').editable({
+            url: "{{ url_for('edit_comment1') }}",
+            showbuttons: 'bottom',
+            validate: function(value) {
+                if($.trim(value) == '') {
+                    return 'This field is required';
+                }
+            }
+        });
+
+        $('#comment{{ loop.index }}').off('click');
+
+        $('#edit{{ loop.index }}').click(function(e){    
+           e.stopPropagation();
+           $('#comment{{ loop.index }}').editable('toggle');
+        }); 
+    });
+</script>
+{% endfor %}

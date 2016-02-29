@@ -1,3 +1,4 @@
+import json
 from app import app, db, lm
 from datetime import datetime
 from flask import current_app, g, flash, render_template, redirect, request, session, url_for
@@ -181,7 +182,7 @@ def thread(id):
         comment = Comment(body=form.body.data, date_created=datetime.utcnow(), c_author=g.user, c_thread=thread)
         Save(comment)
         return redirect(url_for('thread', id=thread.id))
-    comments = thread.comments
+    comments = Comment.query.filter_by(thread_id=thread.id).order_by(Comment.date_created.asc())
     return render_template('thread.html', thread=thread, form=form, comments=comments)
 
 
@@ -249,3 +250,25 @@ def unlike(id):
     Save(unlike)
     flash('Comment unlike.')
     return redirect(url_for('thread', id=comment.thread_id))
+
+
+@app.route('/edit_thread_title', methods=['POST'])
+@login_required
+def edit_thread_title():
+    id = request.form["pk"]
+    thread = Thread.query.get(id)
+    thread.title = request.form["value"]
+    result = {}
+    Save(thread)
+    return json.dumps(result)
+
+
+@app.route('/edit_comment1', methods=['POST'])
+@login_required
+def edit_comment1():
+    id = request.form["pk"]
+    comment = Comment.query.get(id)
+    comment.body = request.form["value"]
+    result = {}
+    Save(comment)
+    return json.dumps(result)

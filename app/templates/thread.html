@@ -57,50 +57,14 @@
             <div class="well">
                 <p>{{ comments.count() }} Comment/s »</p>
                 <div class="table-responsive">
-                    <table id="comments" class="display" cellspacing="0" width="100%">
+                    <table id="comments" class="hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
-                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for comment in comments %}
-                            <tr>
-                                <td width="5%"><img src="http://graph.facebook.com/{{ comment.c_author.social_id.split('$')[1] }}/picture?type=small"></td>
-                                <td>
-                                    <span style="font-size: 80%">
-                                        {% if g.user.id == comment.c_author.id %}
-                                        you
-                                        {% else %}
-                                        <a href="{{ url_for('user', nickname=comment.c_author.nickname) }}">{{ comment.c_author.nickname }}</a>
-                                        {% endif %}
-                                         said, {{ momentjs(comment.date_created).calendar() }} | {{ comment.likes.count() }} Likes
-                                        {% if comment.user_id == g.user.id %}
-                                        <div class="btn-group pull-right">
-                                            <button class=" btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-option-horizontal"></i></button>
-                                            <ul class="dropdown-menu">
-                                                <form id="editcommentform{{ loop.index }}" method="post" action="{{ url_for('edit_comment', id=comment.id) }}"></form>
-                                                <li><a href="#" onclick="document.getElementById('editcommentform{{ loop.index }}').submit();">Edit</a></li>
-                                                <form id="deletecommentform{{ loop.index }}" method="post" action="{{ url_for('delete_comment', id=comment.id) }}"></form>
-                                                <li><a href="#" onclick="document.getElementById('deletecommentform{{ loop.index }}').submit();">Delete</a></li>
-                                            </ul>
-                                        </div>
-                                        {% endif %}
-                                    </span>
-                                    <textarea class="form-control" rows="3" style="resize:none" readonly>{{ comment.body }}</textarea>
-                                    <span>
-                                        {% if not g.user.is_liked(comment) %}
-                                        <form id="likecommentform{{ loop.index }}" method="post" action="{{ url_for('like', id=comment.id) }}"></form>
-                                        <a href="#" onclick="document.getElementById('likecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-up"></i> Like</a>
-                                        {% else %}
-                                        <form id="unlikecommentform{{ loop.index }}" method="post" action="{{ url_for('unlike', id=comment.id) }}"></form>
-                                        <a href="#" onclick="document.getElementById('unlikecommentform{{ loop.index }}').submit();"><i class="glyphicon glyphicon-thumbs-down"></i> Unlike</a>
-                                        {% endif %}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                            {% include 'comments.html' %}
                         </tbody>
                     </table>
                     <b>Got a Comment?</b>
